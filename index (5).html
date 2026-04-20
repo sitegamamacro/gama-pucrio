@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GAMA – Grupo de Análise Macroeconômica Aplicada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & BASE ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #001b58;
+      --navy-deep: #00062e;
+      --off-white: #f4f2f3;
+      --slate:     #303a44;
+      --black:     #000000;
+      --white:     #ffffff;
+      --accent:    #c9a84c;   /* gold – editorial, premium feel */
+      --border:    rgba(255,255,255,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--off-white);
+      color: var(--slate);
+      line-height: 1.6;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* ── TYPOGRAPHY ────────────────────────────────────────── */
+    h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.15; }
+
+    .sobre-text p,
+    .contato-desc,
+    .carta-desc,
+    .relatorio-info p,
+    .hero-desc {
+      text-align: justify;
+    }
+
+    /* ── NAV ───────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(0, 27, 88, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: padding 0.3s;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      height: 36px;
+      width: auto;
+    }
+
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .nav-logo-text span:first-child {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.04em;
+    }
+
+    .nav-logo-text span:last-child {
+      font-size: 0.62rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-links a.active { color: var(--accent); }
+
+    /* hamburger (mobile) */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--white);
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ──────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #042080 100%);
+      display: flex;
+      align-items: center;
+      padding: 8rem 4rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* geometric grid lines decoration */
+    #hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      color: var(--white);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      line-height: 1.08;
+    }
+
+    .hero-title span {
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.7);
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.8rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.25s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--navy-deep);
+    }
+    .btn-primary:hover {
+      background: #dbbe6a;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.35);
+    }
+    .btn-outline:hover {
+      border-color: var(--white);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* hero right side: stats */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .stat-item {
+      background: rgba(0,27,88,0.6);
+      padding: 2rem 1.8rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      color: var(--white);
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-num sup {
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    /* ── SECTION COMMON ─────────────────────────────────────── */
+    section { scroll-margin-top: 80px; }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 4rem;
+    }
+
+    .section-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--navy);
+    }
+
+    /* ── SOBRE ─────────────────────────────────────────────── */
+    #sobre {
+      padding: 6rem 0;
+      background: var(--off-white);
+    }
+
+    .sobre-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .sobre-text p {
+      color: var(--slate);
+      font-size: 1rem;
+      line-height: 1.85;
+      margin-bottom: 1.2rem;
+    }
+
+    .sobre-text p:last-of-type { margin-bottom: 0; }
+
+    .sobre-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sobre-pillar {
+      padding: 1.6rem 0;
+      border-top: 1px solid rgba(0,27,88,0.15);
+    }
+    .sobre-pillar:last-child { border-bottom: 1px solid rgba(0,27,88,0.15); }
+
+    .sobre-pillar h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 0.35rem;
+    }
+
+    .sobre-pillar p {
+      font-size: 0.88rem;
+      color: rgba(48,58,68,0.75);
+      line-height: 1.6;
+    }
+
+    /* ── CARTAS ─────────────────────────────────────────────── */
+    #cartas {
+      padding: 6rem 0;
+      background: var(--navy-deep);
+    }
+
+    #cartas .section-title { color: var(--white); }
+
+    .cartas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .carta-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.25s;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .carta-card:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .carta-date {
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .carta-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .carta-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .carta-link {
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: gap 0.2s;
+    }
+
+    .carta-card:hover .carta-link { gap: 0.7rem; }
+
+    .carta-card.carta-destaque {
+      grid-column: span 3;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      background: rgba(201,168,76,0.08);
+      border-color: rgba(201,168,76,0.3);
+      padding: 2.5rem;
+    }
+
+    .carta-destaque-badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--navy-deep);
+      background: var(--accent);
+      padding: 0.25rem 0.6rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+
+    .carta-destaque-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── RELATÓRIOS ─────────────────────────────────────────── */
+    #relatorios {
+      padding: 6rem 0;
+      background: var(--off-white);
+    }
+
+    .relatorios-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .relatorio-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.6rem 0;
+      border-top: 1px solid rgba(0,27,88,0.12);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .relatorio-item:last-child { border-bottom: 1px solid rgba(0,27,88,0.12); }
+
+    .relatorio-item:hover { background: rgba(0,27,88,0.03); padding-left: 0.75rem; padding-right: 0.75rem; }
+
+    .relatorio-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: rgba(0,27,88,0.2);
+      font-weight: 700;
+      min-width: 2.5rem;
+    }
+
+    .relatorio-info {}
+
+    .relatorio-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--navy);
+      margin-bottom: 0.2rem;
+    }
+
+    .relatorio-meta {
+      font-size: 0.78rem;
+      color: rgba(48,58,68,0.55);
+      letter-spacing: 0.06em;
+    }
+
+    .relatorio-arrow {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,27,88,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .relatorio-item:hover .relatorio-arrow {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    /* ── EQUIPE ─────────────────────────────────────────────── */
+    #equipe {
+      padding: 6rem 0;
+      background: var(--slate);
+    }
+
+    #equipe .section-title { color: var(--white); }
+
+    .diretoria-bloco {
+      margin-bottom: 3rem;
+    }
+
+    .diretoria-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .diretoria-label::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+
+    .equipe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+
+    .membro-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 1.8rem;
+      transition: all 0.25s;
+    }
+
+    .membro-card:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .membro-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy) 0%, #042080 100%);
+      border: 2px solid rgba(201,168,76,0.4);
+      margin-bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .membro-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.98rem;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+
+    .membro-role {
+      font-size: 0.72rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.6rem;
+    }
+
+    .membro-period {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── EVENTOS ─────────────────────────────────────────────── */
+    #eventos {
+      padding: 6rem 0;
+      background: var(--off-white);
+    }
+
+    .eventos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .evento-card {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.8rem;
+      border: 1px solid rgba(0,27,88,0.12);
+      background: var(--white);
+      transition: all 0.25s;
+    }
+
+    .evento-card:hover {
+      border-color: var(--navy);
+      box-shadow: 4px 4px 0 var(--navy);
+      transform: translate(-2px, -2px);
+    }
+
+    .evento-date-block {
+      flex-shrink: 0;
+      width: 52px;
+      text-align: center;
+      padding-top: 4px;
+    }
+
+    .evento-day {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--navy);
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .evento-month {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .evento-divider {
+      width: 1px;
+      background: rgba(0,27,88,0.12);
+      align-self: stretch;
+    }
+
+    .evento-info {}
+
+    .evento-type {
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(48,58,68,0.5);
+      margin-bottom: 0.3rem;
+    }
+
+    .evento-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    .evento-local {
+      font-size: 0.8rem;
+      color: rgba(48,58,68,0.6);
+    }
+
+    /* ── CONTATO ─────────────────────────────────────────────── */
+    #contato {
+      padding: 6rem 0;
+      background: var(--navy);
+    }
+
+    .contato-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    #contato .section-title { color: var(--white); }
+
+    .contato-desc {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.7;
+      margin-top: 1.5rem;
+    }
+
+    .contato-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    .contato-link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--white);
+      font-size: 0.9rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: all 0.2s;
+    }
+
+    .contato-link:hover {
+      border-color: var(--accent);
+      background: rgba(201,168,76,0.06);
+    }
+
+    .contato-link-icon {
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+
+    .contato-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group label {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--white);
+      padding: 0.85rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      border-radius: 0;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(255,255,255,0.25);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--navy-deep);
+      padding: 2.5rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .footer-logo {
+      height: 28px;
+      opacity: 0.7;
+    }
+
+    .footer-divider {
+      width: 1px; height: 24px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .footer-text {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .footer-puc {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .footer-puc img {
+      height: 28px;
+      opacity: 0.55;
+      filter: brightness(0) invert(1);
+    }
+
+    .footer-puc span {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── ANIMATIONS ─────────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MOBILE ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 64px; left: 0; right: 0;
+        background: var(--navy-deep);
+        padding: 2rem 1.5rem;
+        gap: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .section-inner { padding: 0 1.5rem; }
+
+      #hero { padding: 7rem 1.5rem 3rem; }
+      .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+
+      .sobre-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .cartas-grid { grid-template-columns: 1fr; }
+      .carta-card.carta-destaque { grid-column: 1; grid-template-columns: 1fr; }
+      .carta-destaque-right { text-align: left; }
+
+      .equipe-grid { grid-template-columns: 1fr 1fr; }
+      .eventos-grid { grid-template-columns: 1fr; }
+      .contato-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .form-row { grid-template-columns: 1fr; }
+
+      footer {
+        flex-direction: column;
+        gap: 1.2rem;
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">
+      <!-- Logo azul (versão clara para fundo escuro) -->
+      <img src="1.png" alt="GAMA" onerror="this.style.display='none'">
+      <div class="nav-logo-text">
+        <span>GAMA</span>
+        <span>Núcleo de Macroeconomia · PUC-Rio</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#cartas">Cartas</a></li>
+      <li><a href="#relatorios">Relatórios</a></li>
+      <li><a href="#equipe">Equipe</a></li>
+      <li><a href="#eventos">Eventos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-left">
+        <p class="hero-eyebrow">PUC-Rio · Departamento de Economia</p>
+        <h1 class="hero-title">
+          Análise macro&shy;econômica <span>aplicada</span> ao mundo real.
+        </h1>
+        <p class="hero-desc">
+          O GAMA (Grupo de Análise Macroeconômica Aplicada) é o núcleo de macroeconomia da PUC-Rio. Produzimos cartas mensais, relatórios e eventos que conectam a teoria econômica da sala de aula à conjuntura global. Feito por alunos e para alunos do Departamento de Economia da PUC-Rio.
+        </p>
+        <div class="hero-ctas">
+          <a href="#cartas" class="btn btn-primary">Cartas de Conjuntura</a>
+          <a href="#sobre" class="btn btn-outline">Conheça o GAMA</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">2024</div>
+            <div class="stat-label">Criado em</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">60<sup>+</sup></div>
+            <div class="stat-label">Participantes entre trainees e membros ativos</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">4<sup>+</sup></div>
+            <div class="stat-label">Cartas mensais publicadas</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">15<sup>+</sup></div>
+            <div class="stat-label">Visitas a instituições</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">Quem somos</p>
+        <h2 class="section-title">Um núcleo acadêmico orientado à análise e ao debate</h2>
+      </div>
+      <div class="sobre-grid fade-up">
+        <div class="sobre-text">
+          <p>
+            O GAMA é o núcleo de macroeconomia da PUC-Rio, formado por estudantes de graduação comprometidos com a análise da conjuntura econômica nacional e internacional.
+          </p>
+          <p>
+            Publicamos mensalmente a Carta de Conjuntura, documento que reúne avaliações sobre política fiscal e monetária, mercados financeiros, setor externo e dinâmicas macroeconômicas relevantes. Além disso, produzimos relatórios temáticos e organizamos eventos com profissionais do mercado.
+          </p>
+          <p>
+            Nossa missão é desenvolver o pensamento econômico aplicado entre os estudantes de economia da PUC-Rio, preparando-os para atuar com rigor analítico tanto na academia quanto no setor privado e público. Caminhando junto à ênfase em macroeconomia oferecida pelo curso, estimulamos os alunos em atividades fora da sala de aula. A importância da atribuição de responsabilidades para o bom funcionamento do núcleo ajuda no desenvolvimento de soft-skills ligadas ao planejamento, gestão de equipes e muitas outras capacidades tão importantes para o mercado de trabalho.
+          </p>
+        </div>
+        <div class="sobre-aside">
+          <div class="sobre-pillar">
+            <h4>Análise de Conjuntura</h4>
+            <p>Acompanhamento sistemático da economia brasileira e global, com publicações mensais sobre os principais indicadores e tendências.</p>
+          </div>
+          <div class="sobre-pillar">
+            <h4>Formação de Líderes</h4>
+            <p>Desenvolvimento de habilidades analíticas e de comunicação, onde os cargos mais altos ficam responsáveis por equipes que se comunicam diariamente.</p>
+          </div>
+          <div class="sobre-pillar">
+            <h4>Debate e Extensão</h4>
+            <p>Organização de eventos e visitas que aproximam o ambiente universitário do debate econômico contemporâneo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CARTAS DE CONJUNTURA -->
+  <section id="cartas">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">Publicações mensais</p>
+        <h2 class="section-title">Cartas de Conjuntura</h2>
+      </div>
+      <div class="cartas-grid fade-up">
+
+        <!-- CARTA EM DESTAQUE (mais recente) -->
+        <a href="cartas/Carta_de_Conjuntura_Marco_2026.pdf" class="carta-card carta-destaque" target="_blank">
+          <div>
+            <span class="carta-destaque-badge">Edição mais recente</span>
+            <p class="carta-date">Março 2026 · Diretoria de Conjuntura 26.1</p>
+            <h3 class="carta-title">Carta de Conjuntura — Março 2026</h3>
+            <p class="carta-desc">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia. Destaques para a desaceleração do PIB brasileiro, a inflexão da Selic, o choque do petróleo pelo conflito no Oriente Médio e a dinâmica de commodities agrícolas.</p>
+          </div>
+          <div class="carta-destaque-right">
+            <span class="carta-link">Acessar carta →</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATÓRIOS -->
+  <section id="relatorios">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">Publicações especiais</p>
+        <h2 class="section-title">Relatórios</h2>
+      </div>
+      <div class="relatorios-list fade-up">
+
+        <a href="relatorios/Conflito_no_Oriente_Medio_Abril_2026.pdf" class="relatorio-item" target="_blank">
+          <span class="relatorio-num">01</span>
+          <div class="relatorio-info">
+            <p class="relatorio-title">Conflito no Oriente Médio — Impactos Macroeconômicos sobre a Economia</p>
+            <p class="relatorio-meta">Abril 2026 · Relatório Analítico · GAMA / PUC-Rio · Elaboração: Ananda Botelho</p>
+          </div>
+          <div class="relatorio-arrow">↗</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EQUIPE -->
+  <section id="equipe">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">Gestão 2025</p>
+        <h2 class="section-title">Nossa Equipe</h2>
+      </div>
+      <!-- Presidência -->
+      <div class="diretoria-bloco fade-up">
+        <p class="diretoria-label">Presidência</p>
+        <div class="equipe-grid" style="grid-template-columns: repeat(3,1fr); max-width: 400px;">
+          <div class="membro-card">
+            <div class="membro-avatar">G</div>
+            <p class="membro-name">Guilherme Pinheiro</p>
+            <p class="membro-role">Presidente</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diretoria de Conjuntura -->
+      <div class="diretoria-bloco fade-up">
+        <p class="diretoria-label">Diretoria de Conjuntura</p>
+        <div class="equipe-grid">
+          <div class="membro-card">
+            <div class="membro-avatar">A</div>
+            <p class="membro-name">Ananda Botelho</p>
+            <p class="membro-role">Diretora</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">R</div>
+            <p class="membro-name">Renato Thuler</p>
+            <p class="membro-role">Diretor</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">D</div>
+            <p class="membro-name">Daniel Adler</p>
+            <p class="membro-role">Brasil</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">B</div>
+            <p class="membro-name">Bruno Gheventer</p>
+            <p class="membro-role">Brasil</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">D</div>
+            <p class="membro-name">Daniel Castro</p>
+            <p class="membro-role">Brasil</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">D</div>
+            <p class="membro-name">Davi Niskier</p>
+            <p class="membro-role">Brasil</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">B</div>
+            <p class="membro-name">Bernardo Baraúna</p>
+            <p class="membro-role">Estados Unidos</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">M</div>
+            <p class="membro-name">Miguel Dias</p>
+            <p class="membro-role">Estados Unidos</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">M</div>
+            <p class="membro-name">Miguel Ghazi</p>
+            <p class="membro-role">Estados Unidos</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">M</div>
+            <p class="membro-name">Matheus Campello</p>
+            <p class="membro-role">Estados Unidos</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">I</div>
+            <p class="membro-name">Ian Valente</p>
+            <p class="membro-role">Europa</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">G</div>
+            <p class="membro-name">Gabriel Rezende</p>
+            <p class="membro-role">Ásia</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">M</div>
+            <p class="membro-name">Marcos Lopes</p>
+            <p class="membro-role">Ásia</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diretoria de Pessoas -->
+      <div class="diretoria-bloco fade-up">
+        <p class="diretoria-label">Diretoria de Pessoas</p>
+        <div class="equipe-grid" style="grid-template-columns: repeat(3,1fr); max-width: 580px;">
+          <div class="membro-card">
+            <div class="membro-avatar">R</div>
+            <p class="membro-name">Raphaela Garambone</p>
+            <p class="membro-role">Diretora</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">E</div>
+            <p class="membro-name">Eduardo Hamawy</p>
+            <p class="membro-role">Diretor</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diretoria de Eventos -->
+      <div class="diretoria-bloco fade-up">
+        <p class="diretoria-label">Diretoria de Eventos</p>
+        <div class="equipe-grid" style="grid-template-columns: repeat(3,1fr); max-width: 580px;">
+          <div class="membro-card">
+            <div class="membro-avatar">I</div>
+            <p class="membro-name">Izabel Lima</p>
+            <p class="membro-role">Diretora</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+          <div class="membro-card">
+            <div class="membro-avatar">P</div>
+            <p class="membro-name">Pedro Brito</p>
+            <p class="membro-role">Diretor</p>
+            <p class="membro-period">Diretoria 26.1</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTOS -->
+  <section id="eventos">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <p class="section-eyebrow">Agenda</p>
+        <h2 class="section-title">Eventos</h2>
+      </div>
+      <div class="eventos-grid fade-up">
+
+        <div class="evento-card">
+          <div class="evento-date-block">
+            <div class="evento-day">28</div>
+            <div class="evento-month">Abr</div>
+          </div>
+          <div class="evento-divider"></div>
+          <div class="evento-info">
+            <p class="evento-type">Palestra</p>
+            <p class="evento-title">Evento em Breve</p>
+            <p class="evento-local">PUC-Rio · A confirmar</p>
+          </div>
+        </div>
+
+        <div class="evento-card">
+          <div class="evento-date-block">
+            <div class="evento-day">15</div>
+            <div class="evento-month">Mai</div>
+          </div>
+          <div class="evento-divider"></div>
+          <div class="evento-info">
+            <p class="evento-type">Seminário</p>
+            <p class="evento-title">Evento em Breve</p>
+            <p class="evento-local">PUC-Rio · A confirmar</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div class="section-inner">
+      <div class="fade-up" style="max-width: 600px;">
+        <p class="section-eyebrow" style="color: var(--accent); display: flex; align-items: center; gap: 0.75rem;">
+          <span style="display:inline-block;width:24px;height:1px;background:var(--accent);"></span>
+          Fale conosco
+        </p>
+        <h2 class="section-title" style="color: var(--white); margin-top: 0.5rem;">Contato</h2>
+        <p class="contato-desc">
+          Tem interesse em colaborar, propor uma palestra ou saber mais sobre o GAMA? Entre em contato conosco pelos canais abaixo.
+        </p>
+        <div class="contato-links">
+          <a href="mailto:gama@puc-rio.br" class="contato-link">
+            <span class="contato-link-icon">✉</span>
+            gama@puc-rio.br
+          </a>
+          <a href="https://www.instagram.com/gama_pucrio/" class="contato-link" target="_blank">
+            <span class="contato-link-icon">◎</span>
+            @gama_pucrio
+          </a>
+          <a href="https://www.linkedin.com/company/gama-pucrio" class="contato-link" target="_blank">
+            <span class="contato-link-icon">in</span>
+            GAMA · PUC-Rio
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">
+      <img src="1.png" alt="GAMA" class="footer-logo" onerror="this.style.display='none'">
+      <div class="footer-divider"></div>
+      <span class="footer-text">© 2025 GAMA – Grupo de Análise Macroeconômica Aplicada</span>
+    </div>
+    <div class="footer-puc">
+      <img src="logo_puc.png" alt="PUC-Rio" onerror="this.style.display='none'">
+      <span>Departamento de Economia · PUC-Rio</span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll fade-up
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Mobile menu
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close menu on link click
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.id;
+      });
+      document.querySelectorAll('.nav-links a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
