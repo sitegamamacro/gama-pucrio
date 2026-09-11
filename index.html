@@ -3,69 +3,187 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GAMA – Grupo de Análise Macroeconômica Aplicada</title>
+  <title>GAMA – Grupo de Análise Macroeconômica Aplicada | PUC-Rio</title>
+  
+  <meta name="description" content="O GAMA é o núcleo de macroeconomia da PUC-Rio. Produzimos cartas mensais, relatórios e eventos que conectam a teoria econômica da grade curricular à conjuntura global." />
+  <meta property="og:title" content="GAMA – Grupo de Análise Macroeconômica Aplicada" />
+  <meta property="og:description" content="Núcleo de Macroeconomia · PUC-Rio" />
+  <meta property="og:image" content="logo grande.png" />
+
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  <style>
-    /* ── RESET & BASE ──────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    
     :root {
-      --navy:      #001b58;
-      --navy-deep: #00062e;
-      --off-white: #f4f2f3;
-      --slate:     #303a44;
-      --black:     #000000;
-      --white:     #ffffff;
-      --accent:    #c9a84c;   /* gold – editorial, premium feel */
-      --border:    rgba(255,255,255,0.12);
+      --white:       #ffffff;
+      --off-white:   #f4f2f3;
+      --navy:        #001b58;
+      --navy-deep:   #00062e;
+      --blue-vivid:  #0006e0;
+      --blue-mid:    #3843a5;
+      --slate:       #303a44;
+      --slate-muted: #5e6b78;
+      --border:      rgba(0, 27, 88, 0.12);
+      --border-dark: rgba(255, 255, 255, 0.15);
+      --accent-gold: #c9a84c;
+      --green-success: #107e3e;
+      
+      --radius-sm:   4px;
+      --radius-md:   8px;
+      --radius-lg:   12px;
+      --container:   1140px;
     }
 
-    html { scroll-behavior: smooth; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: var(--off-white);
+      background-color: var(--off-white);
       color: var(--slate);
-      line-height: 1.6;
+      line-height: 1.65;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* ── NOISE TEXTURE OVERLAY ─────────────────────────────── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.4;
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      color: var(--navy);
+      line-height: 1.2;
     }
 
-    /* ── TYPOGRAPHY ────────────────────────────────────────── */
-    h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.15; }
-
-    .sobre-text p,
-    .contato-desc,
-    .carta-desc,
-    .relatorio-info p,
-    .hero-desc {
-      text-align: justify;
+    p {
+      color: var(--slate);
+      font-size: 1rem;
+      line-height: 1.7;
     }
 
-    /* ── NAV ───────────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    
+    .top-strip {
+      background: var(--navy-deep);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.75rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .top-strip-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .lang-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 2px;
+      transition: color 0.2s;
+    }
+
+    .lang-btn.active {
+      color: #ffffff;
+      background: var(--blue-mid);
+    }
+
+    .lang-btn:hover {
+      color: #ffffff;
+    }
+
+    
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: var(--navy);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 18px rgba(0, 6, 46, 0.15);
+    }
+
+    .header-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.2rem 4rem;
-      background: rgba(0, 27, 88, 1);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      transition: padding 0.3s;
+      height: 74px;
+      gap: 1.5rem;
+    }
+
+    .header-left-group {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    
+    .drawer-toggle-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .drawer-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #ffffff;
+    }
+
+    .drawer-toggle-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #ffffff;
+      border-radius: 1px;
+      transition: all 0.2s ease;
     }
 
     .nav-logo {
@@ -76,7 +194,7 @@
     }
 
     .nav-logo img {
-      height: 36px;
+      height: 38px;
       width: auto;
     }
 
@@ -88,129 +206,315 @@
 
     .nav-logo-text span:first-child {
       font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: var(--white);
       letter-spacing: 0.04em;
     }
 
     .nav-logo-text span:last-child {
-      font-size: 0.62rem;
-      font-weight: 300;
-      color: rgba(255,255,255,0.55);
-      letter-spacing: 0.12em;
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
 
-    .nav-links {
+    
+    .tabs-nav {
       display: flex;
-      gap: 2.5rem;
+      align-items: center;
+      gap: 0.35rem;
       list-style: none;
     }
 
-    .nav-links a {
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
-      font-size: 0.82rem;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--white); }
-
-    .nav-links a.active { color: var(--accent); }
-
-    /* hamburger (mobile) */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
+    .tab-btn {
       background: none;
-      border: none;
+      border: 1px solid transparent;
+      color: rgba(255, 255, 255, 0.78);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      padding: 4px;
-    }
-    .hamburger span {
-      display: block;
-      width: 24px; height: 2px;
-      background: var(--white);
-      transition: all 0.3s;
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
-    /* ── HERO ──────────────────────────────────────────────── */
-    #hero {
-      min-height: 100vh;
-      background: linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 60%, #042080 100%);
+    .tab-btn:hover {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tab-btn.active {
+      color: var(--white);
+      background: var(--blue-mid);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 6, 46, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .drawer-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .side-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 320px;
+      max-width: 85vw;
+      background: var(--navy-deep);
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 10px 0 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .side-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 1.5rem 1.8rem;
       display: flex;
       align-items: center;
-      padding: 8rem 4rem 4rem;
-      position: relative;
-      overflow: hidden;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* geometric grid lines decoration */
-    #hero::after {
+    .drawer-close-btn {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .drawer-close-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .drawer-nav {
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .drawer-item-btn {
+      background: none;
+      border: none;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.75);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.75rem 1.2rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+
+    .drawer-item-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .drawer-item-btn.active {
+      color: #ffffff;
+      background: var(--blue-mid);
+      font-weight: 600;
+    }
+
+    .drawer-footer {
+      padding: 1.5rem 1.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .drawer-footer a {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .drawer-footer a:hover {
+      color: #ffffff;
+    }
+
+    
+    main.main-content {
+      flex: 1;
+    }
+
+    .tab-panel {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      padding: 3.5rem 0 5rem;
+    }
+
+    .tab-panel.active {
+      display: block;
+      opacity: 1;
+    }
+
+    
+    .section-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue-mid);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-eyebrow::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-      pointer-events: none;
+      width: 16px;
+      height: 2px;
+      background: var(--blue-mid);
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 2.35rem;
+      color: var(--navy);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.8rem 1.6rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .btn-primary:hover {
+      background: var(--navy-deep);
+      border-color: var(--navy-deep);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .btn-outline:hover {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .btn-vivid {
+      background: var(--blue-vivid);
+      color: var(--white);
+    }
+
+    .btn-vivid:hover {
+      background: #0005b8;
+    }
+
+    
+    #tab-inicio {
+      padding: 0;
+    }
+
+    .hero-container {
+      background: linear-gradient(165deg, var(--navy-deep) 0%, var(--navy) 65%, #051d66 100%);
+      color: var(--white);
+      padding: 6.5rem 0 5.5rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     .hero-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 4.5rem;
       align-items: center;
-      position: relative;
-      z-index: 1;
     }
 
     .hero-eyebrow {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: rgba(255, 255, 255, 0.65);
       font-weight: 500;
-      margin-bottom: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 32px; height: 1px;
-      background: var(--accent);
+      margin-bottom: 1rem;
     }
 
     .hero-title {
-      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-family: 'Playfair Display', serif;
+      font-size: 3.1rem;
       color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1.4rem;
       font-weight: 700;
-      margin-bottom: 1.5rem;
-      line-height: 1.08;
-    }
-
-    .hero-title span {
-      color: var(--accent);
     }
 
     .hero-desc {
       font-size: 1.05rem;
-      color: rgba(255,255,255,0.7);
-      font-weight: 300;
-      margin-bottom: 2.5rem;
-      max-width: 480px;
-      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 1.75;
+      margin-bottom: 2.2rem;
     }
 
     .hero-ctas {
@@ -219,685 +523,826 @@
       flex-wrap: wrap;
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.8rem 1.8rem;
-      font-size: 0.82rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 2px;
-      transition: all 0.25s;
-      cursor: pointer;
-      border: none;
+    .hero-ctas .btn-primary {
+      background: var(--white);
+      color: var(--navy);
+      border-color: var(--white);
     }
 
-    .btn-primary {
-      background: var(--accent);
+    .hero-ctas .btn-primary:hover {
+      background: var(--off-white);
       color: var(--navy-deep);
     }
-    .btn-primary:hover {
-      background: #dbbe6a;
-      transform: translateY(-1px);
-    }
 
-    .btn-outline {
-      background: transparent;
+    .hero-ctas .btn-outline {
+      border-color: rgba(255, 255, 255, 0.35);
       color: var(--white);
-      border: 1px solid rgba(255,255,255,0.35);
-    }
-    .btn-outline:hover {
-      border-color: var(--white);
-      background: rgba(255,255,255,0.06);
     }
 
-    /* hero right side: stats */
+    .hero-ctas .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--white);
+    }
+
+    
     .hero-stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.1);
+      gap: 1.25rem;
     }
 
     .stat-item {
-      background: rgba(0,27,88,0.6);
-      padding: 2rem 1.8rem;
-      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 1.6rem 1.4rem;
+      border-radius: var(--radius-sm);
     }
 
     .stat-num {
       font-family: 'Playfair Display', serif;
-      font-size: 2.8rem;
-      color: var(--white);
+      font-size: 2.5rem;
       font-weight: 700;
+      color: var(--white);
       line-height: 1;
       margin-bottom: 0.4rem;
     }
 
-    .stat-num sup {
-      font-size: 1.2rem;
-      color: var(--accent);
-    }
-
     .stat-label {
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.5);
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.4;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.04em;
     }
 
-    /* ── SECTION COMMON ─────────────────────────────────────── */
-    section { scroll-margin-top: 80px; }
-
-    .section-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 4rem;
-    }
-
-    .section-header {
-      margin-bottom: 3.5rem;
-    }
-
-    .section-eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: 0.75rem;
+    
+    .newsletter-section {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2.5rem;
+      margin-top: 3.5rem;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.75rem;
-    }
-    .section-eyebrow::before {
-      content: '';
-      display: block;
-      width: 24px; height: 1px;
-      background: var(--accent);
+      gap: 2.5rem;
     }
 
-    .section-title {
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
+    .newsletter-info h3 {
+      font-size: 1.35rem;
       color: var(--navy);
+      margin-bottom: 0.4rem;
     }
 
-    /* ── SOBRE ─────────────────────────────────────────────── */
-    #sobre {
-      padding: 6rem 0;
+    .newsletter-info p {
+      font-size: 0.92rem;
+      color: var(--slate-muted);
+    }
+
+    .newsletter-form {
+      display: flex;
+      gap: 0.6rem;
+      flex-shrink: 0;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .newsletter-input {
+      flex: 1;
       background: var(--off-white);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      border-radius: var(--radius-sm);
+      outline: none;
+      color: var(--slate);
     }
 
+    .newsletter-input:focus {
+      border-color: var(--navy);
+      background: #ffffff;
+    }
+
+    .feedback-banner {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      font-weight: 500;
+      margin-top: 0.8rem;
+    }
+
+    .feedback-banner.success {
+      background: #eafaf1;
+      color: var(--green-success);
+      border: 1px solid rgba(16, 126, 62, 0.25);
+    }
+
+    
     .sobre-grid {
       display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 5rem;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 4rem;
       align-items: start;
     }
 
     .sobre-text p {
-      color: var(--slate);
-      font-size: 1rem;
-      line-height: 1.85;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.4rem;
+      font-size: 1.02rem;
     }
 
-    .sobre-text p:last-of-type { margin-bottom: 0; }
+    .sobre-text strong {
+      color: var(--navy);
+      font-weight: 600;
+    }
 
     .sobre-aside {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 1.4rem;
     }
 
     .sobre-pillar {
-      padding: 1.6rem 0;
-      border-top: 1px solid rgba(0,27,88,0.15);
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 1.6rem;
+      border-left: 4px solid var(--navy);
+      border-radius: var(--radius-sm);
+      transition: transform 0.2s;
     }
-    .sobre-pillar:last-child { border-bottom: 1px solid rgba(0,27,88,0.15); }
+
+    .sobre-pillar:hover {
+      transform: translateX(4px);
+    }
 
     .sobre-pillar h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
+      font-size: 1.15rem;
+      margin-bottom: 0.4rem;
       color: var(--navy);
-      margin-bottom: 0.35rem;
     }
 
     .sobre-pillar p {
-      font-size: 0.88rem;
-      color: rgba(48,58,68,0.75);
+      font-size: 0.9rem;
+      color: var(--slate-muted);
       line-height: 1.6;
     }
 
-    /* ── CARTAS ─────────────────────────────────────────────── */
-    #cartas {
-      padding: 6rem 0;
-      background: var(--navy-deep);
-    }
-
-    #cartas .section-title { color: var(--white); }
-
+    
     .cartas-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr;
       gap: 1.5rem;
+      margin-bottom: 3.5rem;
     }
 
     .carta-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       padding: 2rem;
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      transition: all 0.25s;
-      cursor: pointer;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
       text-decoration: none;
+      transition: all 0.2s ease;
     }
 
     .carta-card:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: var(--accent);
-      transform: translateY(-3px);
+      border-color: var(--navy);
+      box-shadow: 0 4px 16px rgba(0, 27, 88, 0.08);
+      transform: translateY(-2px);
     }
 
-    .carta-date {
-      font-size: 0.68rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    .carta-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      color: var(--white);
-      line-height: 1.3;
-    }
-
-    .carta-desc {
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.6;
-      flex: 1;
-    }
-
-    .carta-link {
-      font-size: 0.75rem;
-      color: var(--accent);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: gap 0.2s;
-    }
-
-    .carta-card:hover .carta-link { gap: 0.7rem; }
-
-    .carta-card.carta-destaque {
-      grid-column: span 3;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 2rem;
-      align-items: center;
-      background: rgba(201,168,76,0.08);
-      border-color: rgba(201,168,76,0.3);
-      padding: 2.5rem;
+    .carta-card.destaque {
+      background: linear-gradient(135deg, var(--white) 0%, #f8f8fc 100%);
+      border-left: 5px solid var(--blue-mid);
     }
 
     .carta-destaque-badge {
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--navy-deep);
-      background: var(--accent);
-      padding: 0.25rem 0.6rem;
-      font-weight: 600;
       display: inline-block;
-      margin-bottom: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue-mid);
+      background: rgba(56, 67, 165, 0.1);
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.6rem;
     }
 
-    .carta-destaque-right {
-      text-align: right;
-      flex-shrink: 0;
+    .carta-date {
+      font-size: 0.78rem;
+      color: var(--slate-muted);
+      margin-bottom: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    /* ── RELATÓRIOS ─────────────────────────────────────────── */
-    #relatorios {
-      padding: 6rem 0;
+    .carta-title {
+      font-size: 1.35rem;
+      color: var(--navy);
+      margin-bottom: 0.4rem;
+    }
+
+    .carta-desc {
+      font-size: 0.92rem;
+      color: var(--slate-muted);
+    }
+
+    .carta-link {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .carta-card:hover .carta-link {
+      color: var(--blue-vivid);
+    }
+
+    
+    .markets-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .market-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .metric-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--navy);
+      box-shadow: 0 4px 14px rgba(0, 27, 88, 0.07);
+    }
+
+    .metric-card.active {
+      border: 2px solid var(--navy);
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0, 27, 88, 0.12);
+    }
+
+    .metric-card.active::after {
+      content: '';
+      position: absolute;
+      bottom: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--navy);
+    }
+
+    .metric-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--slate-muted);
+      margin-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0f8a48;
+      display: inline-block;
+    }
+
+    .metric-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.15;
+    }
+
+    .metric-subval {
+      font-size: 0.74rem;
+      color: var(--slate-muted);
+      margin-top: 0.15rem;
+    }
+
+    .metric-change {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 0.45rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .metric-change.positive { color: #0f8a48; }
+    .metric-change.negative { color: #c42b2b; }
+
+    .chart-container-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2.2rem;
+      margin-top: 0.5rem;
+      box-shadow: 0 4px 20px rgba(0, 27, 88, 0.04);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .chart-header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .chart-header-left h3 {
+      font-size: 1.4rem;
+      color: var(--navy);
+    }
+
+    .chart-current-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-top: 0.2rem;
+    }
+
+    .chart-big-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+    }
+
+    .chart-header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .range-btn-group {
+      display: inline-flex;
       background: var(--off-white);
+      padding: 0.2rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
     }
 
+    .range-btn {
+      background: transparent;
+      border: none;
+      padding: 0.35rem 0.85rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--slate-muted);
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s ease;
+    }
+
+    .range-btn:hover {
+      color: var(--navy);
+    }
+
+    .range-btn.active {
+      background: var(--navy);
+      color: var(--white);
+      box-shadow: 0 1px 4px rgba(0, 27, 88, 0.2);
+    }
+
+    .chart-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-muted);
+      background: var(--off-white);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0f8a48;
+      box-shadow: 0 0 0 rgba(15, 138, 72, 0.4);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(15, 138, 72, 0.6); }
+      70% { box-shadow: 0 0 0 6px rgba(15, 138, 72, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(15, 138, 72, 0); }
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    
     .relatorios-list {
       display: flex;
       flex-direction: column;
-      gap: 0;
+      gap: 1.2rem;
     }
 
     .relatorio-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.8rem 2rem;
+      display: flex;
       align-items: center;
       gap: 2rem;
-      padding: 1.6rem 0;
-      border-top: 1px solid rgba(0,27,88,0.12);
-      text-decoration: none;
       transition: all 0.2s;
     }
-    .relatorio-item:last-child { border-bottom: 1px solid rgba(0,27,88,0.12); }
 
-    .relatorio-item:hover { background: rgba(0,27,88,0.03); padding-left: 0.75rem; padding-right: 0.75rem; }
+    .relatorio-item:hover {
+      border-color: var(--navy);
+      transform: translateX(4px);
+    }
 
     .relatorio-num {
       font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
-      color: rgba(0,27,88,0.2);
+      font-size: 2rem;
       font-weight: 700;
-      min-width: 2.5rem;
+      color: var(--blue-mid);
+      line-height: 1;
     }
 
-    .relatorio-info {}
+    .relatorio-info {
+      flex: 1;
+    }
 
     .relatorio-title {
       font-family: 'Playfair Display', serif;
-      font-size: 1.05rem;
+      font-size: 1.2rem;
+      font-weight: 600;
       color: var(--navy);
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.3rem;
     }
 
     .relatorio-meta {
-      font-size: 0.78rem;
-      color: rgba(48,58,68,0.55);
-      letter-spacing: 0.06em;
+      font-size: 0.8rem;
+      color: var(--slate-muted);
     }
 
-    .relatorio-arrow {
-      width: 36px; height: 36px;
-      border: 1px solid rgba(0,27,88,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    
+    .ps-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 2.8rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .ps-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+
+    .ps-text p {
+      margin-bottom: 1.4rem;
+      font-size: 1.02rem;
+    }
+
+    .ps-callout {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
       color: var(--navy);
+      font-weight: 600;
+      margin: 1.2rem 0 1.8rem;
+    }
+
+    .ps-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .ps-step-item {
+      background: var(--off-white);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue-mid);
+      padding: 1.2rem 1.4rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .ps-step-item h4 {
       font-size: 1rem;
-      flex-shrink: 0;
-      transition: all 0.2s;
+      margin-bottom: 0.25rem;
+      color: var(--navy);
     }
 
-    .relatorio-item:hover .relatorio-arrow {
-      background: var(--navy);
-      color: var(--white);
-      border-color: var(--navy);
+    .ps-step-item p {
+      font-size: 0.86rem;
+      color: var(--slate-muted);
+      line-height: 1.5;
     }
 
-    /* ── EQUIPE ─────────────────────────────────────────────── */
-    #equipe {
-      padding: 6rem 0;
-      background: var(--slate);
-    }
-
-    #equipe .section-title { color: var(--white); }
-
+    
     .diretoria-bloco {
-      margin-bottom: 3rem;
+      margin-bottom: 3.5rem;
     }
 
     .diretoria-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
       font-weight: 600;
+      color: var(--navy);
       margin-bottom: 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
       display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .diretoria-label::before {
-      content: '';
-      display: block;
-      width: 20px; height: 1px;
-      background: var(--accent);
+      justify-content: space-between;
+      align-items: flex-end;
     }
 
     .equipe-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 1.2rem;
     }
 
     .membro-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 1.8rem;
-      transition: all 0.25s;
-      min-height: 180px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
     }
 
     .membro-card:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.25);
+      border-color: var(--navy);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 27, 88, 0.06);
     }
 
     .membro-avatar {
-      width: 56px; height: 56px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--navy) 0%, #042080 100%);
-      border: 2px solid rgba(201,168,76,0.4);
-      margin-bottom: 1.1rem;
+      background: var(--navy);
+      color: var(--white);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Playfair Display', serif;
-      font-size: 1.2rem;
-      color: var(--white);
+      font-size: 1.1rem;
       font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .membro-info {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
 
     .membro-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.98rem;
-      color: var(--white);
-      margin-bottom: 0.25rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--navy);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .membro-role {
-      font-size: 0.72rem;
-      color: var(--accent);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.6rem;
+      font-size: 0.78rem;
+      color: var(--blue-mid);
+      font-weight: 500;
     }
 
     .membro-period {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.35);
+      font-size: 0.7rem;
+      color: var(--slate-muted);
     }
 
-    /* ── EVENTOS ─────────────────────────────────────────────── */
-    #eventos {
-      padding: 6rem 0;
-      background: var(--off-white);
-    }
-
-    .eventos-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    .evento-card {
-      display: flex;
-      gap: 1.5rem;
-      padding: 1.8rem;
-      border: 1px solid rgba(0,27,88,0.12);
-      background: var(--white);
-      transition: all 0.25s;
-    }
-
-    .evento-card:hover {
-      border-color: var(--navy);
-      box-shadow: 4px 4px 0 var(--navy);
-      transform: translate(-2px, -2px);
-    }
-
-    .evento-date-block {
-      flex-shrink: 0;
-      width: 52px;
-      text-align: center;
-      padding-top: 4px;
-    }
-
-    .evento-day {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--navy);
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    .evento-month {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .evento-divider {
-      width: 1px;
-      background: rgba(0,27,88,0.12);
-      align-self: stretch;
-    }
-
-    .evento-info {}
-
-    .evento-type {
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(48,58,68,0.5);
-      margin-bottom: 0.3rem;
-    }
-
-    .evento-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: var(--navy);
-      margin-bottom: 0.4rem;
-      line-height: 1.3;
-    }
-
-    .evento-local {
-      font-size: 0.8rem;
-      color: rgba(48,58,68,0.6);
-    }
-
-    /* ── CONTATO ─────────────────────────────────────────────── */
-    #contato {
-      padding: 6rem 0;
+    
+    .contato-panel {
       background: var(--navy);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      padding: 4rem 3rem;
     }
 
     .contato-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 5rem;
+      gap: 4.5rem;
       align-items: start;
     }
 
-    #contato .section-title { color: var(--white); }
+    .contato-panel .section-title {
+      color: var(--white);
+    }
 
     .contato-desc {
-      font-size: 1rem;
-      color: rgba(255,255,255,0.6);
+      font-size: 1.02rem;
+      color: rgba(255, 255, 255, 0.78);
       line-height: 1.7;
-      margin-top: 1.5rem;
+      margin: 1.2rem 0 2rem;
     }
 
     .contato-links {
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      margin-top: 2.5rem;
     }
 
     .contato-link {
       display: flex;
       align-items: center;
       gap: 1rem;
-      text-decoration: none;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.9rem 1.2rem;
+      border-radius: var(--radius-sm);
       color: var(--white);
       font-size: 0.9rem;
-      padding: 1rem 1.2rem;
-      border: 1px solid rgba(255,255,255,0.12);
       transition: all 0.2s;
     }
 
     .contato-link:hover {
-      border-color: var(--accent);
-      background: rgba(201,168,76,0.06);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--white);
     }
 
     .contato-link-icon {
-      font-size: 1.1rem;
-      color: var(--accent);
+      font-weight: 700;
+      color: var(--accent-gold);
+      font-size: 1rem;
+      width: 24px;
+      text-align: center;
     }
 
-    .contato-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    
+    .contato-form-wrap {
+      background: rgba(0, 6, 46, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 2.2rem;
     }
 
     .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
+      margin-bottom: 1.2rem;
     }
 
     .form-group label {
-      font-size: 0.7rem;
-      letter-spacing: 0.14em;
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 0.4rem;
       font-weight: 500;
     }
 
     .form-group input,
     .form-group textarea {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       color: var(--white);
-      padding: 0.85rem 1rem;
+      padding: 0.75rem 0.9rem;
       font-family: 'DM Sans', sans-serif;
       font-size: 0.9rem;
       outline: none;
-      border-radius: 0;
+      border-radius: var(--radius-sm);
       transition: border-color 0.2s;
-      resize: vertical;
     }
 
     .form-group input:focus,
     .form-group textarea:focus {
-      border-color: var(--accent);
+      border-color: var(--white);
+      background: rgba(255, 255, 255, 0.12);
     }
 
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: rgba(255,255,255,0.25);
+    .form-status-msg {
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      display: none;
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    .form-status-msg.success {
+      display: block;
+      background: rgba(16, 126, 62, 0.2);
+      border: 1px solid #107e3e;
+      color: #72e29e;
     }
 
-    /* ── FOOTER ─────────────────────────────────────────────── */
+    
     footer {
       background: var(--navy-deep);
-      padding: 2.5rem 4rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.07);
+      color: rgba(255, 255, 255, 0.65);
+      padding: 2.5rem 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.8rem;
     }
 
-    .footer-left {
+    .footer-inner {
       display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 1.5rem;
-    }
-
-    .footer-logo {
-      height: 28px;
-      opacity: 0.7;
-    }
-
-    .footer-divider {
-      width: 1px; height: 24px;
-      background: rgba(255,255,255,0.15);
-    }
-
-    .footer-text {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.35);
     }
 
     .footer-puc {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.9rem;
     }
 
     .footer-puc img {
-      height: 28px;
-      opacity: 0.55;
-      filter: brightness(0) invert(1);
+      height: 48px;
+      width: auto;
+      display: block;
+      opacity: 0.92;
     }
 
-    .footer-puc span {
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 0.08em;
-    }
-
-    /* ── ANIMATIONS ─────────────────────────────────────────── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .fade-up.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ── MOBILE ─────────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-
-      .nav-links.open {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: 64px; left: 0; right: 0;
-        background: var(--navy-deep);
-        padding: 2rem 1.5rem;
-        gap: 1.5rem;
-        border-top: 1px solid var(--border);
+    
+    @media (max-width: 992px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 3rem;
       }
-
-      .section-inner { padding: 0 1.5rem; }
-
-      #hero { padding: 7rem 1.5rem 3rem; }
-      .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
-      .hero-stats { grid-template-columns: 1fr 1fr; }
-
-      .sobre-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-
-      .cartas-grid { grid-template-columns: 1fr; }
-      .carta-card.carta-destaque { grid-column: 1; grid-template-columns: 1fr; }
-      .carta-destaque-right { text-align: left; }
-
-      .equipe-grid { grid-template-columns: 1fr 1fr; }
-      .eventos-grid { grid-template-columns: 1fr; }
-      .contato-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      .form-row { grid-template-columns: 1fr; }
-
-      footer {
+      .sobre-grid, .ps-grid, .contato-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .tabs-nav {
+        display: none;
+      }
+      .newsletter-section {
         flex-direction: column;
-        gap: 1.2rem;
-        padding: 2rem 1.5rem;
+        align-items: stretch;
+      }
+      .newsletter-form {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 2.2rem;
+      }
+      .section-title {
+        font-size: 1.85rem;
+      }
+      .carta-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .footer-inner {
+        flex-direction: column;
+        gap: 1rem;
         text-align: center;
       }
     }
@@ -905,551 +1350,1549 @@
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <a href="#hero" class="nav-logo">
-      <!-- Logo azul (versão clara para fundo escuro) -->
-      <img src="logo grande.png" alt="GAMA" onerror="this.style.display='none'">
-      <div class="nav-logo-text">
-        <span>GAMA</span>
-        <span>Núcleo de Macroeconomia · PUC-Rio</span>
-      </div>
-    </a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#sobre">Sobre</a></li>
-      <li><a href="#cartas">Cartas</a></li>
-      <li><a href="#relatorios">Relatórios</a></li>
-      <li><a href="#ps">PS</a></li>
-      <li><a href="#equipe">Equipe</a></li>
-      <li><a href="#contato">Contato</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-inner">
-      <div class="hero-left">
-        <p class="hero-eyebrow">PUC-Rio · Departamento de Economia</p>
-        <h1 class="hero-title">
-          Análise macroeconômica aplicada para fora da sala de aula.
-        </h1>
-        <p class="hero-desc">
-          O GAMA (Grupo de Análise Macroeconômica Aplicada) é o núcleo de macroeconomia da PUC-Rio. Produzimos cartas mensais, relatórios e eventos que conectam a teoria econômica da grade curricular à conjuntura global. Feito por alunos e para alunos do Departamento de Economia da PUC-Rio.
-        </p>
-        <div class="hero-ctas">
-          <a href="#cartas" class="btn btn-primary">Cartas de Conjuntura</a>
-          <a href="#sobre" class="btn btn-outline">Conheça o GAMA</a>
-        </div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-num">2024</div>
-            <div class="stat-label">Criado em</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num">50<sup>+</sup></div>
-            <div class="stat-label">Participantes entre trainees e membros ativos</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num">30<sup>+</sup></div>
-            <div class="stat-label">Aulas de capacitação</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num">20<sup>+</sup></div>
-            <div class="stat-label">Visitas a instituições</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SOBRE -->
-  <section id="sobre">
-    <div class="section-inner">
-      <div class="section-header fade-up">
-        <p class="section-eyebrow">Quem somos</p>
-        <h2 class="section-title">Um núcleo orientado à análise e ao debate, em constante expansão</h2>
-      </div>
-      <div class="sobre-grid fade-up">
-        <div class="sobre-text">
-          <p>
-            Publicamos mensalmente a Carta de Conjuntura, sob a coordenação da <strong>Diretoria de Conjuntura</strong>. Esse documento que reúne avaliações sobre política fiscal e monetária, mercados financeiros, setor externo e dinâmicas macroeconômicas relevantes. Enquanto isso, a <strong>Diretoria de Eventos</strong> busca contatos externos que nos levam à visitas, aulas e conversas com grandes empresas e nomes do mercado.
-          </p>
-          <p>
-            A <strong>Diretoria de Pessoas</strong> é responsável pela elaboração do processo seletivo de entrada no núcleo, além do acompanhamento dos trainees que recebem um curso de capacitação durante um semestre.
-          </p>
-          <p>
-            Nossa missão é desenvolver o pensamento econômico aplicado entre os estudantes de economia da PUC-Rio, preparando-os para atuar tanto na academia quanto no setor privado e público. Caminhando junto à ênfase em macroeconomia oferecida pelo curso, estimulamos os alunos em atividades fora da sala de aula. A importância da atribuição de responsabilidades para o bom funcionamento do núcleo ajuda no desenvolvimento de soft-skills ligadas ao planejamento, gestão de equipes e muitas outras capacidades tão importantes para o mercado de trabalho.
-          </p>
-        </div>
-        <div class="sobre-aside">
-          <div class="sobre-pillar">
-            <h4>Análise de Conjuntura</h4>
-            <p>Acompanhamento sistemático da economia brasileira e global, com publicações mensais sobre os principais indicadores e tendências.</p>
-          </div>
-          <div class="sobre-pillar">
-            <h4>Formação de Líderes</h4>
-            <p>Desenvolvimento de habilidades analíticas e de comunicação, onde os cargos mais altos ficam responsáveis por equipes que se comunicam diariamente.</p>
-          </div>
-          <div class="sobre-pillar">
-            <h4>Debate e Extensão</h4>
-            <p>Organização de eventos e visitas que aproximam o ambiente universitário do debate econômico contemporâneo.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CARTAS DE CONJUNTURA -->
-  <section id="cartas">
-    <div class="section-inner">
-      <div class="section-header fade-up">
-        <p class="section-eyebrow">Publicações mensais</p>
-        <h2 class="section-title">Cartas de Conjuntura</h2>
-      </div>
-      <div class="cartas-grid fade-up">
-
-        <!-- CARTA EM DESTAQUE (mais recente) -->
-        <a href="cartas/Carta de Conjuntura - Maio 26.pdf" class="carta-card carta-destaque" target="_blank">
-          <div>
-            <span class="carta-destaque-badge">Edição mais recente</span>
-            <p class="carta-date">Maio 2026 · Diretoria de Conjuntura 26.1</p>
-            <h3 class="carta-title">Carta de Conjuntura — Maio 2026</h3>
-            <p class="carta-desc">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.</p>
-          </div>
-          <div class="carta-destaque-right">
-            <span class="carta-link">Acessar carta →</span>
-          </div>
-        </a>
-        <a href="cartas/Carta de Conjuntura - Abril 2026.pdf" class="carta-card carta-destaque" target="_blank">
-  <div>
-    <p class="carta-date">Abril 2026 · Diretoria de Conjuntura 26.1</p>
-    <h3 class="carta-title">Carta de Conjuntura — Abril 2026</h3>
-    <p class="carta-desc">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.</p>
-  </div>
-  <div class="carta-destaque-right">
-    <span class="carta-link">Acessar carta →</span>
-  </div>
-</a>
-        <a href="cartas/Carta_de_Conjuntura_Marco_2026.pdf" class="carta-card carta-destaque" target="_blank">
-  <div>
-    <p class="carta-date">Março 2026 · Diretoria de Conjuntura 26.1</p>
-    <h3 class="carta-title">Carta de Conjuntura — Março 2026</h3>
-    <p class="carta-desc">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.</p>
-  </div>
-  <div class="carta-destaque-right">
-    <span class="carta-link">Acessar carta →</span>
-  </div>
-</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- RELATÓRIOS -->
-  <section id="relatorios">
-    <div class="section-inner">
-      <div class="section-header fade-up">
-        <p class="section-eyebrow">Publicações especiais</p>
-        <h2 class="section-title">Relatórios</h2>
-      </div>
-      <div class="relatorios-list fade-up">
-
-        <a href="relatorios/Conflito_no_Oriente_Medio_Abril_2026.pdf" class="relatorio-item" target="_blank">
-          <span class="relatorio-num">01</span>
-          <div class="relatorio-info">
-            <p class="relatorio-title">Conflito no Oriente Médio — Impactos Macroeconômicos sobre a Economia</p>
-            <p class="relatorio-meta">Abril 2026 · Relatório Analítico · GAMA / PUC-Rio · Elaboração: Ananda Botelho</p>
-          </div>
-        </a>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Proceso Seletivo -->
-  <section id="ps">
-
-    <section id="ps" style="padding-bottom: 6rem;">
-  <div class="section-inner">
-    <div class="section-header fade-up" style="margin-bottom: 1rem;">
-      <p class="section-eyebrow">Faça parte</p>
-      <h2 class="section-title">Processo Seletivo</h2>
-    </div>
-    <div class="sobre-grid fade-up">
-      <div class="sobre-text">
-        <p>
-          No nosso processo seletivo, avaliamos o comprometimento do(a) candidato(a) durante algumas etapas previamente anunciadas. Por meio de um vídeo de apresentação curto, uma prova escrita, o envio de um relatório e uma dinâmica final em grupo, selecionamos a turma que seguirá para nosso Curso de Capacitação de Trainees durante um semestre. Nesse curso, nossos trainees recebem noções macroeconômicas básicas para futuramente incorporar alguma diretoria como membro atuante.
-        </p>
-        <p>
-          <strong>Encorajamos aqueles que não foram aprovados anteriormente a se inscreverem novamente em nosso PS, visto que a alta demanda é frequentemente o principal fator de corte. Para atender a necessidade de todos, buscamos turmas de no máximo 30 trainees por semestre.</strong>
-        </p>
-        <p>
-        <p style="font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--navy); font-weight: 600; margin-top: 0.5rem;">
-          Venha fazer parte de um dos núcleos que mais cresce na PUC-Rio.
-        </p>
-        <a href="https://forms.gle/mD45B6L6guPYX6BY6" target="_blank" class="btn btn-primary" style="display: inline-flex; margin-top: 1.5rem;">
-  Inscreva-se no PS clicando aqui
-</a>
-      </div>
-      <div class="sobre-aside">
-        <div class="sobre-pillar">
-          <h4>Vídeo de Apresentação</h4>
-          <p>Um vídeo curto para nos contar quem você é e por que quer fazer parte do GAMA.</p>
-        </div>
-        <div class="sobre-pillar">
-          <h4>Prova de múltipla escolha</h4>
-          <p>Avaliação do raciocínio e de conhecimentos gerais.</p>
-        </div>
-        <div class="sobre-pillar">
-          <h4>Relatório</h4>
-          <p>Envio de um relatório que demonstre cuidado com a estética, capacidade de análise e comunicação escrita.</p>
-        </div>
-        <div class="sobre-pillar">
-          <h4>Dinâmica em Grupo</h4>
-          <p>Etapa final que avalia trabalho em equipe, postura, proatividade e comprometimento com o grupo.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-  </div>
-</section>
-
-  <!-- EQUIPE -->
-  <section id="equipe">
-    <div class="section-inner">
-      <div class="section-header fade-up">
-        <p class="section-eyebrow">Gestão 2026</p>
-        <h2 class="section-title">Nossa Equipe</h2>
-      </div>
-      <!-- Presidência -->
-      <div class="diretoria-bloco fade-up">
-        <p class="diretoria-label">Presidência</p>
-        <div class="equipe-grid">
-          <div class="membro-card">
-            <div class="membro-avatar">G</div>
-            <p class="membro-name">Guilherme Pinheiro</p>
-            <p class="membro-role">Presidente</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">R</div>
-            <p class="membro-name">Raphaela Garambone</p>
-            <p class="membro-role">Vice-Presidente</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Diretoria de Conjuntura -->
-      <div class="diretoria-bloco fade-up">
-        <p class="diretoria-label">Diretoria de Conjuntura</p>
-        <div class="equipe-grid">
-          <div class="membro-card">
-            <div class="membro-avatar">F</div>
-            <p class="membro-name">Felipe Becker</p>
-            <p class="membro-role">Diretor</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">D</div>
-            <p class="membro-name">Daniel Adler</p>
-            <p class="membro-role">Diretor</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">B</div>
-            <p class="membro-name">Bernardo Fuks</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">C</div>
-            <p class="membro-name">Carlos Eduardo Maiolino</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">D</div>
-            <p class="membro-name">Daniel Barret</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">D</div>
-            <p class="membro-name">Daniel Holck</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">E</div>
-            <p class="membro-name">Eduardo Costa</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">F</div>
-            <p class="membro-name">Felipe de Souza</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">G</div>
-            <p class="membro-name">Gabriel Meirelles</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-           <div class="membro-card">
-            <div class="membro-avatar">G</div>
-            <p class="membro-name">Gabriela Schaimberg</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-           <div class="membro-card">
-            <div class="membro-avatar">J</div>
-            <p class="membro-name">João Pedro Lucas</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">J</div>
-            <p class="membro-name">João Pedro Sertã</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">M</div>
-            <p class="membro-name">Maria Elisa Souza</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-           <div class="membro-card">
-            <div class="membro-avatar">M</div>
-            <p class="membro-name">Miguel Dias</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-            <div class="membro-card">
-            <div class="membro-avatar">P</div>
-            <p class="membro-name">Pedro de Freitas</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-            <div class="membro-card">
-            <div class="membro-avatar">S</div>
-            <p class="membro-name">Samy Balassiano</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Diretoria de Pessoas -->
-      <div class="diretoria-bloco fade-up">
-        <p class="diretoria-label">Diretoria de Pessoas</p>
-        <div class="equipe-grid">
-          <div class="membro-card">
-            <div class="membro-avatar">B</div>
-            <p class="membro-name">Beatriz Menezes</p>
-            <p class="membro-role">Diretora</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">M</div>
-            <p class="membro-name">Mariana Pontes</p>
-            <p class="membro-role">Diretora</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">C</div>
-            <p class="membro-name">Caio Klautau</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">D</div>
-            <p class="membro-name">Diego Leal</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">J</div>
-            <p class="membro-name">João Pedro Aurélio</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">L</div>
-            <p class="membro-name">Lucas Ganem</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">S</div>
-            <p class="membro-name">Samuel Cavalcante</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Diretoria de Eventos -->
-      <div class="diretoria-bloco fade-up">
-        <p class="diretoria-label">Diretoria de Eventos</p>
-        <div class="equipe-grid">
-          <div class="membro-card">
-            <div class="membro-avatar">A</div>
-            <p class="membro-name">Alice Rezende</p>
-            <p class="membro-role">Diretora</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">V</div>
-            <p class="membro-name">Vinicius Paiva</p>
-            <p class="membro-role">Diretor</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          
-          <div class="membro-card">
-            <div class="membro-avatar">A</div>
-            <p class="membro-name">Arthur Ituassu</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">C</div>
-            <p class="membro-name">Célio José Maidantchik</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">D</div>
-            <p class="membro-name">Daniel Conde</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">E</div>
-            <p class="membro-name">Eduarda Rezende</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">F</div>
-            <p class="membro-name">Filippo Pastura</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">G</div>
-            <p class="membro-name">Guilherme Lauria</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">H</div>
-            <p class="membro-name">Helena Baptista</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">J</div>
-            <p class="membro-name">Julia Feijó</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-          <div class="membro-card">
-            <div class="membro-avatar">M</div>
-            <p class="membro-name">Maria Beatriz Alves</p>
-            <p class="membro-role">Membro</p>
-            <p class="membro-period">Diretoria 26.2</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
   
-  <!-- CONTATO -->
-  <section id="contato">
-    <div class="section-inner">
-      <div class="fade-up" style="max-width: 600px;">
-        <p class="section-eyebrow" style="color: var(--accent); display: flex; align-items: center; gap: 0.75rem;">
-          <span style="display:inline-block;width:24px;height:1px;background:var(--accent);"></span>
-          Fale conosco
-        </p>
-        <h2 class="section-title" style="color: var(--white); margin-top: 0.5rem;">Contato</h2>
-        <p class="contato-desc">
-          Tem interesse em colaborar, propor uma palestra ou saber mais sobre o GAMA? Entre em contato conosco pelos canais abaixo.
-        </p>
-        <div class="contato-links">
-          <a href="mailto:gama@puc-rio.br" class="contato-link">
-            <span class="contato-link-icon">✉</span>
-            gama.diretoriadepessoas@gmail.com
+  <div class="top-strip">
+    <div class="container top-strip-inner">
+      <span data-i18n="top-dept">Departamento de Economia · PUC-Rio</span>
+      <div class="lang-switcher">
+        <button class="lang-btn active" id="btn-pt" onclick="setLanguage('pt')">PT</button>
+        <span style="opacity: 0.4;">|</span>
+        <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+      </div>
+    </div>
+  </div>
+
+  
+  <header class="site-header">
+    <div class="container header-inner">
+      
+      
+      <div class="header-left-group">
+        <button class="drawer-toggle-btn" id="drawerToggleBtn" aria-label="Abrir Menu Principal">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <a href="#inicio" class="nav-logo" onclick="switchTab('inicio'); return false;">
+          <img src="logo grande.png" alt="GAMA" onerror="this.style.display='none'">
+          <div class="nav-logo-text">
+            <span>GAMA</span>
+            <span data-i18n="nav-sub">Núcleo de Macroeconomia · PUC-Rio</span>
+          </div>
+        </a>
+      </div>
+
+      
+      <nav aria-label="Abas de Navegação">
+        <ul class="tabs-nav" id="tabsNav">
+          <li><button class="tab-btn active" data-tab="inicio" onclick="switchTab('inicio')"><span data-i18n="tab-inicio">Início</span></button></li>
+          <li><button class="tab-btn" data-tab="sobre" onclick="switchTab('sobre')"><span data-i18n="tab-sobre">Sobre</span></button></li>
+          <li><button class="tab-btn" data-tab="cartas" onclick="switchTab('cartas')"><span data-i18n="tab-cartas">Cartas</span></button></li>
+          <li><button class="tab-btn" data-tab="mercados" onclick="switchTab('mercados')"><span data-i18n="tab-mercados">Mercados</span></button></li>
+          <li><button class="tab-btn" data-tab="relatorios" onclick="switchTab('relatorios')"><span data-i18n="tab-relatorios">Relatórios</span></button></li>
+          <li><button class="tab-btn" data-tab="ps" onclick="switchTab('ps')"><span data-i18n="tab-ps">PS</span></button></li>
+          <li><button class="tab-btn" data-tab="equipe" onclick="switchTab('equipe')"><span data-i18n="tab-equipe">Equipe</span></button></li>
+          <li><button class="tab-btn" data-tab="contato" onclick="switchTab('contato')"><span data-i18n="tab-contato">Contato</span></button></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="side-drawer" id="sideDrawer" aria-label="Menu Lateral">
+    <div class="drawer-header">
+      <div class="nav-logo">
+        <img src="logo grande.png" alt="GAMA" style="height: 32px; width: auto;" onerror="this.style.display='none'">
+        <div class="nav-logo-text">
+          <span style="color:#fff; font-size:1.1rem; font-weight:700;">GAMA</span>
+        </div>
+      </div>
+      <button class="drawer-close-btn" id="drawerCloseBtn" aria-label="Fechar Menu" onclick="closeDrawer()">✕</button>
+    </div>
+
+    <nav class="drawer-nav">
+      <button class="drawer-item-btn active" data-tab="inicio" onclick="drawerSwitchTab('inicio')">
+        <span data-i18n="tab-inicio">Início</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="sobre" onclick="drawerSwitchTab('sobre')">
+        <span data-i18n="tab-sobre">Sobre</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="cartas" onclick="drawerSwitchTab('cartas')">
+        <span data-i18n="tab-cartas">Cartas de Conjuntura</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="mercados" onclick="drawerSwitchTab('mercados')">
+        <span data-i18n="tab-mercados">Painel de Mercados</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="relatorios" onclick="drawerSwitchTab('relatorios')">
+        <span data-i18n="tab-relatorios">Relatórios Especiais</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="ps" onclick="drawerSwitchTab('ps')">
+        <span data-i18n="tab-ps">Processo Seletivo</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="equipe" onclick="drawerSwitchTab('equipe')">
+        <span data-i18n="tab-equipe">Nossa Equipe</span> <span>→</span>
+      </button>
+      <button class="drawer-item-btn" data-tab="contato" onclick="drawerSwitchTab('contato')">
+        <span data-i18n="tab-contato">Contato</span> <span>→</span>
+      </button>
+    </nav>
+
+    <div class="drawer-footer">
+      <a href="cartas/Carta de Conjuntura - Maio 26.pdf" target="_blank" style="color: var(--accent-gold); font-weight: 600;">
+        <span>📄</span> <span data-i18n="drawer-pdf">Baixar Última Carta (Maio 2026)</span>
+      </a>
+      <a href="https://www.linkedin.com/company/gama-puc-rio/" target="_blank">
+        <span>🔗</span> LinkedIn: GAMA - PUC-Rio
+      </a>
+      <a href="https://www.instagram.com/gama_pucrio/" target="_blank">
+        <span>📸</span> Instagram: @gama_pucrio
+      </a>
+      <a href="mailto:gama.diretoriadepessoas@gmail.com">
+        <span>✉</span> gama.diretoriadepessoas@gmail.com
+      </a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    
+    
+    <div class="tab-panel active" id="tab-inicio">
+      <div class="hero-container">
+        <div class="container hero-inner">
+          <div>
+            <p class="hero-eyebrow" data-i18n="hero-eyebrow">PUC-Rio · Departamento de Economia</p>
+            <h1 class="hero-title" data-i18n="hero-title">
+              Análise macroeconômica aplicada para fora da sala de aula.
+            </h1>
+            <p class="hero-desc" data-i18n="hero-desc">
+              O GAMA (Grupo de Análise Macroeconômica Aplicada) é o núcleo de macroeconomia da PUC-Rio. Produzimos cartas mensais, relatórios e eventos que conectam a teoria econômica da grade curricular à conjuntura global. Feito por alunos e para alunos do Departamento de Economia da PUC-Rio.
+            </p>
+            <div class="hero-ctas">
+              <button class="btn btn-primary" onclick="switchTab('cartas')">
+                <span data-i18n="hero-btn-cartas">Cartas de Conjuntura</span>
+              </button>
+              <button class="btn btn-outline" onclick="switchTab('sobre')">
+                <span data-i18n="hero-btn-sobre">Conheça o GAMA</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">2024</div>
+              <div class="stat-label" data-i18n="stat-1">Criado em</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">50<sup>+</sup></div>
+              <div class="stat-label" data-i18n="stat-2">Participantes entre trainees e membros ativos</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">30<sup>+</sup></div>
+              <div class="stat-label" data-i18n="stat-3">Aulas de capacitação</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">20<sup>+</sup></div>
+              <div class="stat-label" data-i18n="stat-4">Visitas a instituições</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- [INATIVO: Inscrição de Newsletter - Início]
+      <div class="container">
+        <div class="newsletter-section">
+          <div class="newsletter-info">
+            <h3 data-i18n="newsletter-title">Receba as Cartas de Conjuntura no seu E-mail</h3>
+            <p data-i18n="newsletter-desc">Cadastre-se para receber as publicações mensais e relatórios analíticos do GAMA em primeira mão.</p>
+          </div>
+          <div>
+            <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event, 'inicio')">
+              <input type="email" id="newsletter-email-inicio" class="newsletter-input" required placeholder="seu@email.com" />
+              <button type="submit" class="btn btn-primary"><span data-i18n="newsletter-btn">Inscrever-se</span></button>
+            </form>
+            <div id="newsletter-msg-inicio" class="feedback-banner success" style="display:none;"></div>
+          </div>
+        </div>
+      </div>
+      -->
+    </div>
+
+    
+    <div class="tab-panel" id="tab-sobre">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow" data-i18n="sobre-eyebrow">Quem somos</p>
+          <h2 class="section-title" data-i18n="sobre-title">Um núcleo orientado à análise e ao debate, em constante expansão</h2>
+        </div>
+
+        <div class="sobre-grid">
+          <div class="sobre-text">
+            <p data-i18n="sobre-p1">
+              Publicamos mensalmente a Carta de Conjuntura, sob a coordenação da <strong>Diretoria de Conjuntura</strong>. Esse documento que reúne avaliações sobre política fiscal e monetária, mercados financeiros, setor externo e dinâmicas macroeconômicas relevantes. Enquanto isso, a <strong>Diretoria de Eventos</strong> busca contatos externos que nos levam à visitas, aulas e conversas com grandes empresas e nomes do mercado.
+            </p>
+            <p data-i18n="sobre-p2">
+              A <strong>Diretoria de Pessoas</strong> é responsável pela elaboração do processo seletivo de entrada no núcleo, além do acompanhamento dos trainees que recebem um curso de capacitação durante um semestre.
+            </p>
+            <p data-i18n="sobre-p3">
+              Nossa missão é desenvolver o pensamento econômico aplicado entre os estudantes de economia da PUC-Rio, preparando-os para atuar tanto na academia quanto no setor privado e público. Caminhando junto à ênfase em macroeconomia oferecida pelo curso, estimulamos os alunos em atividades fora da sala de aula. A importância da atribuição de responsabilidades para o bom funcionamento do núcleo ajuda no desenvolvimento de soft-skills ligadas ao planejamento, gestão de equipes e muitas outras capacidades tão importantes para o mercado de trabalho.
+            </p>
+          </div>
+
+          <div class="sobre-aside">
+            <div class="sobre-pillar">
+              <h4 data-i18n="pillar-1-title">Análise de Conjuntura</h4>
+              <p data-i18n="pillar-1-desc">Acompanhamento sistemático da economia brasileira e global, com publicações mensais sobre os principais indicadores e tendências.</p>
+            </div>
+            <div class="sobre-pillar">
+              <h4 data-i18n="pillar-2-title">Formação de Líderes</h4>
+              <p data-i18n="pillar-2-desc">Desenvolvimento de habilidades analíticas e de comunicação, onde os cargos mais altos ficam responsáveis por equipes que se comunicam diariamente.</p>
+            </div>
+            <div class="sobre-pillar">
+              <h4 data-i18n="pillar-3-title">Debate e Extensão</h4>
+              <p data-i18n="pillar-3-desc">Organização de eventos e visitas que aproximam o ambiente universitário do debate econômico contemporâneo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="tab-panel" id="tab-cartas">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow" data-i18n="cartas-eyebrow">Publicações mensais</p>
+          <h2 class="section-title" data-i18n="cartas-title">Cartas de Conjuntura</h2>
+        </div>
+
+        <div class="cartas-grid">
+          
+          <a href="cartas/Carta de Conjuntura - Maio 26.pdf" class="carta-card destaque" target="_blank">
+            <div>
+              <span class="carta-destaque-badge" data-i18n="carta-destaque-badge">Edição mais recente</span>
+              <p class="carta-date">Maio 2026 · Diretoria de Conjuntura 26.1</p>
+              <h3 class="carta-title" data-i18n="carta-maio-title">Carta de Conjuntura — Maio 2026</h3>
+              <p class="carta-desc" data-i18n="carta-desc-padrao">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.</p>
+            </div>
+            <div>
+              <span class="carta-link"><span data-i18n="carta-link-text">Acessar carta</span> →</span>
+            </div>
           </a>
-          <a href="https://www.instagram.com/gama_pucrio/" class="contato-link" target="_blank">
-            <span class="contato-link-icon">@</span>
-            @gama_pucrio
+
+          
+          <a href="cartas/Carta de Conjuntura - Abril 2026.pdf" class="carta-card" target="_blank">
+            <div>
+              <p class="carta-date">Abril 2026 · Diretoria de Conjuntura 26.1</p>
+              <h3 class="carta-title" data-i18n="carta-abril-title">Carta de Conjuntura — Abril 2026</h3>
+              <p class="carta-desc" data-i18n="carta-desc-padrao">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.</p>
+            </div>
+            <div>
+              <span class="carta-link"><span data-i18n="carta-link-text">Acessar carta</span> →</span>
+            </div>
           </a>
-          <a href="https://www.linkedin.com/company/gama-puc-rio/" class="contato-link" target="_blank">
-            <span class="contato-link-icon">in</span>
-            GAMA - PUC-Rio
+
+          
+          <a href="cartas/Carta_de_Conjuntura_Marco_2026.pdf" class="carta-card" target="_blank">
+            <div>
+              <p class="carta-date">Março 2026 · Diretoria de Conjuntura 26.1</p>
+              <h3 class="carta-title" data-i18n="carta-marco-title">Carta de Conjuntura — Março 2026</h3>
+              <p class="carta-desc" data-i18n="carta-desc-padrao">Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.</p>
+            </div>
+            <div>
+              <span class="carta-link"><span data-i18n="carta-link-text">Acessar carta</span> →</span>
+            </div>
+          </a>
+        </div>
+
+        
+        <!-- [INATIVO: Inscrição de Newsletter - Cartas]
+        <div class="newsletter-section">
+          <div class="newsletter-info">
+            <h3 data-i18n="newsletter-title">Receba as Cartas de Conjuntura no seu E-mail</h3>
+            <p data-i18n="newsletter-desc">Cadastre-se para receber as publicações mensais e relatórios analíticos do GAMA em primeira mão.</p>
+          </div>
+          <div>
+            <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event, 'cartas')">
+              <input type="email" id="newsletter-email-cartas" class="newsletter-input" required placeholder="seu@email.com" />
+              <button type="submit" class="btn btn-primary"><span data-i18n="newsletter-btn">Inscrever-se</span></button>
+            </form>
+            <div id="newsletter-msg-cartas" class="feedback-banner success" style="display:none;"></div>
+          </div>
+        </div>
+        -->
+      </div>
+    </div>
+
+    
+    <div class="tab-panel" id="tab-mercados">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow" data-i18n="mercados-eyebrow">Diretoria de Conjuntura</p>
+          <h2 class="section-title" data-i18n="mercados-title">Painel de Mercados & Indicadores</h2>
+          <p style="color: var(--slate-muted); margin-top: 0.5rem;" data-i18n="mercados-sub">
+            Acompanhamento sistemático de moedas, commodities e curvas pela equipe de pesquisa do GAMA.
+          </p>
+        </div>
+
+        <div class="markets-dashboard">
+          
+          
+          <div class="market-metrics-grid" id="marketMetricsGrid">
+            
+            <div class="metric-card active" id="card-USDBRL" onclick="selectMarketAsset('USDBRL')">
+              <span class="metric-label">
+                <span data-i18n="asset-USDBRL-label">USD / BRL</span>
+                <span class="metric-live-dot" title="API em tempo real"></span>
+              </span>
+              <span class="metric-value" id="val-USDBRL">R$ 5,08</span>
+              <span class="metric-subval" id="sub-USDBRL" data-i18n="asset-USDBRL-sub">Dólar Comercial</span>
+              <span class="metric-change positive" id="chg-USDBRL">▲ +0,00%</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-EURBRL" onclick="selectMarketAsset('EURBRL')">
+              <span class="metric-label">
+                <span data-i18n="asset-EURBRL-label">EUR / BRL</span>
+                <span class="metric-live-dot" title="API em tempo real"></span>
+              </span>
+              <span class="metric-value" id="val-EURBRL">R$ 5,90</span>
+              <span class="metric-subval" id="sub-EURBRL" data-i18n="asset-EURBRL-sub">Euro Comercial</span>
+              <span class="metric-change positive" id="chg-EURBRL">▲ +0,00%</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-SELIC" onclick="selectMarketAsset('SELIC')">
+              <span class="metric-label">
+                <span data-i18n="asset-SELIC-label">Selic Atual</span>
+                <span class="metric-live-dot" title="API Banco Central do Brasil"></span>
+              </span>
+              <span class="metric-value" id="val-SELIC">14,00%</span>
+              <span class="metric-subval" id="sub-SELIC" data-i18n="asset-SELIC-sub">Última mudança: 06/08/2026</span>
+              <span class="metric-change negative" id="chg-SELIC">▼ -0,25 p.p. (Copom)</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-IPCA" onclick="selectMarketAsset('IPCA')">
+              <span class="metric-label">
+                <span data-i18n="asset-IPCA-label">Inflação (IPCA)</span>
+                <span class="metric-live-dot" title="API IBGE / BCB"></span>
+              </span>
+              <span class="metric-value" id="val-IPCA">4,44% a.a.</span>
+              <span class="metric-subval" id="sub-IPCA" data-i18n="asset-IPCA-sub">Acumulado 12 meses</span>
+              <span class="metric-change positive" id="chg-IPCA">▲ +0,07% no mês</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-BRENT" onclick="selectMarketAsset('BRENT')">
+              <span class="metric-label">
+                <span data-i18n="asset-BRENT-label">Petróleo Brent</span>
+                <span class="metric-live-dot" title="Mercado Global"></span>
+              </span>
+              <span class="metric-value" id="val-BRENT">US$ 97,76</span>
+              <span class="metric-subval" id="sub-BRENT" data-i18n="asset-BRENT-sub">Barril (ICE/NYMEX)</span>
+              <span class="metric-change positive" id="chg-BRENT">▲ +48,08% (1A)</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-GOLD" onclick="selectMarketAsset('GOLD')">
+              <span class="metric-label">
+                <span data-i18n="asset-GOLD-label">Ouro (XAU/USD)</span>
+                <span class="metric-live-dot" title="Mercado Global"></span>
+              </span>
+              <span class="metric-value" id="val-GOLD">US$ 4.437</span>
+              <span class="metric-subval" id="sub-GOLD" data-i18n="asset-GOLD-sub">Onça-troy</span>
+              <span class="metric-change positive" id="chg-GOLD">▲ +21,96% (1A)</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-SPX" onclick="selectMarketAsset('SPX')">
+              <span class="metric-label">
+                <span data-i18n="asset-SPX-label">S&P 500 (SPX)</span>
+                <span class="metric-live-dot" title="Nova York"></span>
+              </span>
+              <span class="metric-value" id="val-SPX">7.690,92</span>
+              <span class="metric-subval" id="sub-SPX" data-i18n="asset-SPX-sub">Índice EUA</span>
+              <span class="metric-change positive" id="chg-SPX">▲ +18,41% (1A)</span>
+            </div>
+
+            
+            <div class="metric-card" id="card-IBOV" onclick="selectMarketAsset('IBOV')">
+              <span class="metric-label">
+                <span data-i18n="asset-IBOV-label">Ibovespa</span>
+                <span class="metric-live-dot" title="B3 Brasil"></span>
+              </span>
+              <span class="metric-value" id="val-IBOV">189.159</span>
+              <span class="metric-subval" id="sub-IBOV" data-i18n="asset-IBOV-sub">B3 São Paulo</span>
+              <span class="metric-change positive" id="chg-IBOV">▲ +33,41% (1A)</span>
+            </div>
+          </div>
+
+          
+          <div class="chart-container-box">
+            <div class="chart-header">
+              <div class="chart-header-left">
+                <h3 id="chartActiveTitle">USD / BRL — Dólar Comercial</h3>
+                <div class="chart-current-price-row">
+                  <span class="chart-big-price" id="chartBigPrice">R$ 5,08</span>
+                  <span class="metric-change positive" id="chartBigChange">▲ +0,00%</span>
+                  <span style="font-size: 0.8rem; color: var(--slate-muted);" id="chartTimeScope">(Período selecionado)</span>
+                </div>
+              </div>
+              <div class="chart-header-controls">
+                <div class="chart-live-badge" style="cursor: pointer;" onclick="refreshMarketDataManual()" title="Clique para forçar novo fetch de todos os ativos">
+                  <span class="pulse-dot" id="manualRefreshDot"></span>
+                  <span id="chartSourceBadge">API BCB & Mercado</span>
+                  <span style="font-size: 0.75rem; margin-left: 0.3rem;">↻</span>
+                </div>
+                <button class="range-btn" id="manualRefreshBtn" onclick="refreshMarketDataManual()" style="background: var(--off-white); border: 1px solid var(--border); padding: 0.35rem 0.7rem; font-size: 0.75rem; font-weight: 600; color: var(--navy); display: inline-flex; align-items: center; gap: 0.3rem;" title="Atualizar dados agora">
+                  <span id="refreshIcon">↻</span> <span id="refreshLabel" data-i18n="chart-refresh-btn">Atualizar</span>
+                </button>
+                <div class="range-btn-group">
+                  <button class="range-btn" id="range-1M" onclick="setChartRange('1M')">1M</button>
+                  <button class="range-btn" id="range-6M" onclick="setChartRange('6M')">6M</button>
+                  <button class="range-btn active" id="range-1A" onclick="setChartRange('1A')">1A</button>
+                  <button class="range-btn" id="range-MAX" onclick="setChartRange('MAX')" data-i18n="range-all">Tudo</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="position: relative; height: 380px; width: 100%;">
+              <canvas id="macroChart"></canvas>
+            </div>
+            
+            <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; border-top: 1px solid var(--border); padding-top: 0.8rem;">
+              <span style="font-size: 0.78rem; color: var(--slate-muted);" id="chartDataSourceNote" data-i18n="chart-data-note">
+                Fonte: Banco Central do Brasil (SGS), AwesomeAPI e Séries Históricas Oficiais auditadas pelo GAMA Macro.
+              </span>
+              <span style="font-size: 0.78rem; color: var(--slate-muted);" id="chartLastUpdated" data-i18n="chart-last-updated-default">
+                Atualização automática contínua
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="tab-panel" id="tab-relatorios">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow" data-i18n="relatorios-eyebrow">Publicações especiais</p>
+          <h2 class="section-title" data-i18n="relatorios-title">Relatórios</h2>
+        </div>
+
+        <div class="relatorios-list">
+          <a href="relatorios/Conflito_no_Oriente_Medio_Abril_2026.pdf" class="relatorio-item" target="_blank">
+            <span class="relatorio-num">01</span>
+            <div class="relatorio-info">
+              <p class="relatorio-title" data-i18n="relatorio-1-title">Conflito no Oriente Médio — Impactos Macroeconômicos sobre a Economia</p>
+              <p class="relatorio-meta" data-i18n="relatorio-1-meta">Abril 2026 · Relatório Analítico · GAMA / PUC-Rio · Elaboração: Ananda Botelho</p>
+            </div>
+            <span class="carta-link"><span data-i18n="carta-link-text">Acessar</span> →</span>
           </a>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-left">
-      <div class="footer-divider"></div>
-      <span class="footer-text">Elaboração do site: Guilherme Pinheiro © 2026 GAMA – Grupo de Análise Macroeconômica Aplicada</span>
+    
+    <div class="tab-panel" id="tab-ps">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow" data-i18n="ps-eyebrow">Faça parte</p>
+          <h2 class="section-title" data-i18n="ps-title">Processo Seletivo</h2>
+        </div>
+
+        <div class="ps-card">
+          <div class="ps-grid">
+            <div class="ps-text">
+              <p data-i18n="ps-p1">
+                No nosso processo seletivo, avaliamos o comprometimento do(a) candidato(a) durante algumas etapas previamente anunciadas. Por meio de um vídeo de apresentação curto, uma prova escrita, o envio de um relatório e uma dinâmica final em grupo, selecionamos a turma que seguirá para nosso Curso de Capacitação de Trainees durante um semestre. Nesse curso, nossos trainees recebem noções macroeconômicas básicas para futuramente incorporar alguma diretoria como membro atuante.
+              </p>
+              <p data-i18n="ps-p2">
+                <strong>Encorajamos aqueles que não foram aprovados anteriormente a se inscreverem novamente em nosso PS, visto que a alta demanda é frequentemente o principal fator de corte. Para atender a necessidade de todos, buscamos turmas de no máximo 30 trainees por semestre.</strong>
+              </p>
+              <p class="ps-callout" data-i18n="ps-callout">
+                Venha fazer parte de um dos núcleos que mais cresce na PUC-Rio.
+              </p>
+              <a href="https://forms.gle/mD45B6L6guPYX6BY6" target="_blank" class="btn btn-primary">
+                <span data-i18n="ps-btn">Inscreva-se no PS clicando aqui</span>
+              </a>
+            </div>
+
+            <div class="ps-steps">
+              <div class="ps-step-item">
+                <h4 data-i18n="ps-step-1-title">Vídeo de Apresentação</h4>
+                <p data-i18n="ps-step-1-desc">Um vídeo curto para nos contar quem você é e por que quer fazer parte do GAMA.</p>
+              </div>
+              <div class="ps-step-item">
+                <h4 data-i18n="ps-step-2-title">Prova de múltipla escolha</h4>
+                <p data-i18n="ps-step-2-desc">Avaliação do raciocínio e de conhecimentos gerais.</p>
+              </div>
+              <div class="ps-step-item">
+                <h4 data-i18n="ps-step-3-title">Relatório</h4>
+                <p data-i18n="ps-step-3-desc">Envio de um relatório que demonstre cuidado com a estética, capacidade de análise e comunicação escrita.</p>
+              </div>
+              <div class="ps-step-item">
+                <h4 data-i18n="ps-step-4-title">Dinâmica em Grupo</h4>
+                <p data-i18n="ps-step-4-desc">Etapa final que avalia trabalho em equipe, postura, proatividade e comprometimento com o grupo.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="footer-puc">
-      
-      <span>Departamento de Economia · PUC-Rio</span>
+
+    
+    <div class="tab-panel" id="tab-equipe">
+      <div class="container">
+        <div class="section-header">
+          <p class="section-eyebrow" data-i18n="equipe-eyebrow">Gestão 2026</p>
+          <h2 class="section-title" data-i18n="equipe-title">Nossa Equipe</h2>
+        </div>
+
+        
+        <div class="diretoria-bloco">
+          <p class="diretoria-label"><span data-i18n="dir-presidencia">Presidência</span></p>
+          <div class="equipe-grid">
+            <div class="membro-card">
+              <div class="membro-avatar">G</div>
+              <div class="membro-info">
+                <p class="membro-name">Guilherme Pinheiro</p>
+                <p class="membro-role" data-i18n="role-pres">Presidente</p>
+                <p class="membro-period">Diretoria 26.2</p>
+              </div>
+            </div>
+            <div class="membro-card">
+              <div class="membro-avatar">R</div>
+              <div class="membro-info">
+                <p class="membro-name">Raphaela Garambone</p>
+                <p class="membro-role" data-i18n="role-vpres">Vice-Presidente</p>
+                <p class="membro-period">Diretoria 26.2</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="diretoria-bloco">
+          <p class="diretoria-label"><span data-i18n="dir-conjuntura">Diretoria de Conjuntura</span></p>
+          <div class="equipe-grid">
+            <div class="membro-card"><div class="membro-avatar">F</div><div class="membro-info"><p class="membro-name">Felipe Becker</p><p class="membro-role" data-i18n="role-dir">Diretor</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">D</div><div class="membro-info"><p class="membro-name">Daniel Adler</p><p class="membro-role" data-i18n="role-dir">Diretor</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">B</div><div class="membro-info"><p class="membro-name">Bernardo Fuks</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">C</div><div class="membro-info"><p class="membro-name">Carlos Eduardo Maiolino</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">D</div><div class="membro-info"><p class="membro-name">Daniel Barret</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">D</div><div class="membro-info"><p class="membro-name">Daniel Holck</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">E</div><div class="membro-info"><p class="membro-name">Eduardo Costa</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">F</div><div class="membro-info"><p class="membro-name">Felipe de Souza</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">G</div><div class="membro-info"><p class="membro-name">Gabriel Meirelles</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">G</div><div class="membro-info"><p class="membro-name">Gabriela Schaimberg</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">J</div><div class="membro-info"><p class="membro-name">João Pedro Lucas</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">M</div><div class="membro-info"><p class="membro-name">Maria Elisa Souza</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">M</div><div class="membro-info"><p class="membro-name">Miguel Dias</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">P</div><div class="membro-info"><p class="membro-name">Pedro de Freitas</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">S</div><div class="membro-info"><p class="membro-name">Samy Balassiano</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+          </div>
+        </div>
+
+        
+        <div class="diretoria-bloco">
+          <p class="diretoria-label"><span data-i18n="dir-pessoas">Diretoria de Pessoas</span></p>
+          <div class="equipe-grid">
+            <div class="membro-card"><div class="membro-avatar">B</div><div class="membro-info"><p class="membro-name">Beatriz Menezes</p><p class="membro-role" data-i18n="role-dir">Diretora</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">M</div><div class="membro-info"><p class="membro-name">Mariana Pontes</p><p class="membro-role" data-i18n="role-dir">Diretora</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">C</div><div class="membro-info"><p class="membro-name">Caio Klautau</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">D</div><div class="membro-info"><p class="membro-name">Diego Leal</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">J</div><div class="membro-info"><p class="membro-name">João Pedro Aurélio</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">L</div><div class="membro-info"><p class="membro-name">Lucas Ganem</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">S</div><div class="membro-info"><p class="membro-name">Samuel Cavalcante</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+          </div>
+        </div>
+
+        
+        <div class="diretoria-bloco">
+          <p class="diretoria-label"><span data-i18n="dir-eventos">Diretoria de Eventos</span></p>
+          <div class="equipe-grid">
+            <div class="membro-card"><div class="membro-avatar">A</div><div class="membro-info"><p class="membro-name">Alice Rezende</p><p class="membro-role" data-i18n="role-dir">Diretora</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">V</div><div class="membro-info"><p class="membro-name">Vinicius Paiva</p><p class="membro-role" data-i18n="role-dir">Diretor</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">A</div><div class="membro-info"><p class="membro-name">Arthur Ituassu</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">C</div><div class="membro-info"><p class="membro-name">Célio José Maidantchik</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">D</div><div class="membro-info"><p class="membro-name">Daniel Conde</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">E</div><div class="membro-info"><p class="membro-name">Eduarda Rezende</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">F</div><div class="membro-info"><p class="membro-name">Filippo Pastura</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">G</div><div class="membro-info"><p class="membro-name">Guilherme Lauria</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">H</div><div class="membro-info"><p class="membro-name">Helena Baptista</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">J</div><div class="membro-info"><p class="membro-name">Julia Feijó</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+            <div class="membro-card"><div class="membro-avatar">M</div><div class="membro-info"><p class="membro-name">Maria Beatriz Alves</p><p class="membro-role" data-i18n="role-membro">Membro</p><p class="membro-period">Diretoria 26.2</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="tab-panel" id="tab-contato">
+      <div class="container">
+        <div class="contato-panel">
+          <div class="contato-grid">
+            <div>
+              <p class="section-eyebrow" style="color: var(--accent-gold);" data-i18n="contato-eyebrow">Fale conosco</p>
+              <h2 class="section-title" data-i18n="contato-title">Contato</h2>
+              <p class="contato-desc" data-i18n="contato-desc">
+                Tem interesse em colaborar, propor uma palestra ou saber mais sobre o GAMA? Entre em contato conosco pelos canais abaixo.
+              </p>
+
+              <div class="contato-links">
+                <a href="mailto:gama.diretoriadepessoas@gmail.com" class="contato-link">
+                  <span class="contato-link-icon">✉</span>
+                  <span>gama.diretoriadepessoas@gmail.com</span>
+                </a>
+                <a href="https://www.instagram.com/gama_pucrio/" class="contato-link" target="_blank">
+                  <span class="contato-link-icon">@</span>
+                  <span>@gama_pucrio</span>
+                </a>
+                <a href="https://www.linkedin.com/company/gama-puc-rio/" class="contato-link" target="_blank">
+                  <span class="contato-link-icon">in</span>
+                  <span>GAMA - PUC-Rio</span>
+                </a>
+              </div>
+            </div>
+
+            
+            <!-- [INATIVO: Formulário de Contato Web3Forms]
+            <div class="contato-form-wrap">
+              <form id="contactForm" onsubmit="handleDirectFormSubmit(event)">
+                <div class="form-group">
+                  <label for="form-nome" data-i18n="form-label-nome">Nome</label>
+                  <input type="text" id="form-nome" required placeholder="Seu nome" />
+                </div>
+                <div class="form-group">
+                  <label for="form-email" data-i18n="form-label-email">E-mail</label>
+                  <input type="email" id="form-email" required placeholder="seu@email.com" />
+                </div>
+                <div class="form-group">
+                  <label for="form-mensagem" data-i18n="form-label-msg">Mensagem</label>
+                  <textarea id="form-mensagem" rows="4" required placeholder="Escreva sua mensagem..."></textarea>
+                </div>
+                <button type="submit" id="form-submit-btn" class="btn btn-primary" style="background: var(--white); color: var(--navy); width: 100%;">
+                  <span data-i18n="form-btn">Enviar Mensagem</span>
+                </button>
+                <div id="formStatusMsg" class="form-status-msg"></div>
+              </form>
+            </div>
+            -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <span data-i18n="footer-text">Elaboração do site: Guilherme Pinheiro e Daniel Adler © 2026 GAMA – Grupo de Análise Macroeconômica Aplicada</span>
+      </div>
+      <div class="footer-puc">
+        <img src="lg-puc-white.png" alt="PUC-Rio" onerror="this.onerror=null; this.src='lg-puc-rio.png';">
+        <span data-i18n="footer-dept">Departamento de Economia · PUC-Rio</span>
+      </div>
     </div>
   </footer>
 
+  
   <script>
-    // Scroll fade-up
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
+    const translations = {
+      pt: {
+        "top-dept": "Departamento de Economia · PUC-Rio",
+        "nav-sub": "Núcleo de Macroeconomia · PUC-Rio",
+        "tab-inicio": "Início",
+        "tab-sobre": "Sobre",
+        "tab-cartas": "Cartas",
+        "tab-mercados": "Mercados",
+        "tab-relatorios": "Relatórios",
+        "tab-ps": "PS",
+        "tab-equipe": "Equipe",
+        "tab-contato": "Contato",
+        "drawer-pdf": "Baixar Última Carta (Maio 2026)",
+        
+        "hero-eyebrow": "PUC-Rio · Departamento de Economia",
+        "hero-title": "Análise macroeconômica aplicada para fora da sala de aula.",
+        "hero-desc": "O GAMA (Grupo de Análise Macroeconômica Aplicada) é o núcleo de macroeconomia da PUC-Rio. Produzimos cartas mensais, relatórios e eventos que conectam a teoria econômica da grade curricular à conjuntura global. Feito por alunos e para alunos do Departamento de Economia da PUC-Rio.",
+        "hero-btn-cartas": "Cartas de Conjuntura",
+        "hero-btn-sobre": "Conheça o GAMA",
+        
+        "stat-1": "Criado em",
+        "stat-2": "Participantes entre trainees e membros ativos",
+        "stat-3": "Aulas de capacitação",
+        "stat-4": "Visitas a instituições",
+        
+        "newsletter-title": "Receba as Cartas de Conjuntura no seu E-mail",
+        "newsletter-desc": "Cadastre-se para receber as publicações mensais e relatórios analíticos do GAMA em primeira mão.",
+        "newsletter-btn": "Inscrever-se",
+        "newsletter-success": "✓ E-mail cadastrado com sucesso! Você receberá as próximas edições.",
+        
+        "sobre-eyebrow": "Quem somos",
+        "sobre-title": "Um núcleo orientado à análise e ao debate, em constante expansão",
+        "sobre-p1": "Publicamos mensalmente a Carta de Conjuntura, sob a coordenação da <strong>Diretoria de Conjuntura</strong>. Esse documento que reúne avaliações sobre política fiscal e monetária, mercados financeiros, setor externo e dinâmicas macroeconômicas relevantes. Enquanto isso, a <strong>Diretoria de Eventos</strong> busca contatos externos que nos levam à visitas, aulas e conversas com grandes empresas e nomes do mercado.",
+        "sobre-p2": "A <strong>Diretoria de Pessoas</strong> é responsável pela elaboração do processo seletivo de entrada no núcleo, além do acompanhamento dos trainees que recebem um curso de capacitação durante um semestre.",
+        "sobre-p3": "Nossa missão é desenvolver o pensamento econômico aplicado entre os estudantes de economia da PUC-Rio, preparando-os para atuar tanto na academia quanto no setor privado e público. Caminhando junto à ênfase em macroeconomia oferecida pelo curso, estimulamos os alunos em atividades fora da sala de aula. A importância da atribuição de responsabilidades para o bom funcionamento do núcleo ajuda no desenvolvimento de soft-skills ligadas ao planejamento, gestão de equipes e muitas outras capacidades tão importantes para o mercado de trabalho.",
+        
+        "pillar-1-title": "Análise de Conjuntura",
+        "pillar-1-desc": "Acompanhamento sistemático da economia brasileira e global, com publicações mensais sobre os principais indicadores e tendências.",
+        "pillar-2-title": "Formação de Líderes",
+        "pillar-2-desc": "Desenvolvimento de habilidades analíticas e de comunicação, onde os cargos mais altos ficam responsáveis por equipes que se comunicam diariamente.",
+        "pillar-3-title": "Debate e Extensão",
+        "pillar-3-desc": "Organização de eventos e visitas que aproximam o ambiente universitário do debate econômico contemporâneo.",
+        
+        "cartas-eyebrow": "Publicações mensais",
+        "cartas-title": "Cartas de Conjuntura",
+        "carta-destaque-badge": "Edição mais recente",
+        "carta-maio-title": "Carta de Conjuntura — Maio 2026",
+        "carta-abril-title": "Carta de Conjuntura — Abril 2026",
+        "carta-marco-title": "Carta de Conjuntura — Março 2026",
+        "carta-desc-padrao": "Visão macroeconômica sobre Brasil, EUA, Europa e Ásia.",
+        "carta-link-text": "Acessar carta",
+        
+        "mercados-eyebrow": "Diretoria de Conjuntura",
+        "mercados-title": "Painel de Mercados & Indicadores",
+        "mercados-sub": "Acompanhamento sistemático de moedas, commodities e curvas pela equipe de pesquisa do GAMA.",
+        "chart-title": "Petróleo Brent e Taxa de Câmbio USD/BRL",
+        "chart-sub": "Variações Diárias (%) em Agosto e início de Setembro de 2026 | Fonte: Diretoria de Conjuntura GAMA",
+        
+        "asset-USDBRL-label": "USD / BRL",
+        "asset-USDBRL-sub": "Dólar Comercial",
+        "asset-EURBRL-label": "EUR / BRL",
+        "asset-EURBRL-sub": "Euro Comercial",
+        "asset-SELIC-label": "Selic Atual",
+        "asset-SELIC-sub": "Última mudança: 06/08/2026",
+        "asset-IPCA-label": "Inflação (IPCA)",
+        "asset-IPCA-sub": "Acumulado 12 meses",
+        "asset-BRENT-label": "Petróleo Brent",
+        "asset-BRENT-sub": "Barril (ICE/NYMEX)",
+        "asset-GOLD-label": "Ouro (XAU/USD)",
+        "asset-GOLD-sub": "Onça-troy",
+        "asset-SPX-label": "S&P 500 (SPX)",
+        "asset-SPX-sub": "Índice EUA",
+        "asset-IBOV-label": "Ibovespa",
+        "asset-IBOV-sub": "B3 São Paulo",
+        "range-all": "Tudo",
+        "chart-refresh-btn": "Atualizar",
+        "chart-refresh-done": "Atualizado!",
+        "chart-refresh-loading": "Buscando...",
+        "chart-data-note": "Fonte: Banco Central do Brasil (SGS), AwesomeAPI e Séries Históricas Oficiais auditadas pelo GAMA Macro.",
+        "chart-last-updated-default": "Atualização automática contínua",
+        
+        "relatorios-eyebrow": "Publicações especiais",
+        "relatorios-title": "Relatórios",
+        "relatorio-1-title": "Conflito no Oriente Médio — Impactos Macroeconômicos sobre a Economia",
+        "relatorio-1-meta": "Abril 2026 · Relatório Analítico · GAMA / PUC-Rio · Elaboração: Ananda Botelho",
+        
+        "ps-eyebrow": "Faça parte",
+        "ps-title": "Processo Seletivo",
+        "ps-p1": "No nosso processo seletivo, avaliamos o comprometimento do(a) candidato(a) durante algumas etapas previamente anunciadas. Por meio de um vídeo de apresentação curto, uma prova escrita, o envio de um relatório e uma dinâmica final em grupo, selecionamos a turma que seguirá para nosso Curso de Capacitação de Trainees durante um semestre. Nesse curso, nossos trainees recebem noções macroeconômicas básicas para futuramente incorporar alguma diretoria como membro atuante.",
+        "ps-p2": "<strong>Encorajamos aqueles que não foram aprovados anteriormente a se inscreverem novamente em nosso PS, visto que a alta demanda é frequentemente o principal fator de corte. Para atender a necessidade de todos, buscamos turmas de no máximo 30 trainees por semestre.</strong>",
+        "ps-callout": "Venha fazer parte de um dos núcleos que mais cresce na PUC-Rio.",
+        "ps-btn": "Inscreva-se no PS clicando aqui",
+        "ps-step-1-title": "Vídeo de Apresentação",
+        "ps-step-1-desc": "Um vídeo curto para nos contar quem você é e por que quer fazer parte do GAMA.",
+        "ps-step-2-title": "Prova de múltipla escolha",
+        "ps-step-2-desc": "Avaliação do raciocínio e de conhecimentos gerais.",
+        "ps-step-3-title": "Relatório",
+        "ps-step-3-desc": "Envio de um relatório que demonstre cuidado com a estética, capacidade de análise e comunicação escrita.",
+        "ps-step-4-title": "Dinâmica em Grupo",
+        "ps-step-4-desc": "Etapa final que avalia trabalho em equipe, postura, proatividade e comprometimento com o grupo.",
+        
+        "equipe-eyebrow": "Gestão 2026",
+        "equipe-title": "Nossa Equipe",
+        "dir-presidencia": "Presidência",
+        "dir-conjuntura": "Diretoria de Conjuntura",
+        "dir-pessoas": "Diretoria de Pessoas",
+        "dir-eventos": "Diretoria de Eventos",
+        "role-pres": "Presidente",
+        "role-vpres": "Vice-Presidente",
+        "role-dir": "Diretor(a)",
+        "role-membro": "Membro",
+        
+        "contato-eyebrow": "Fale conosco",
+        "contato-title": "Contato",
+        "contato-desc": "Tem interesse em colaborar, propor uma palestra ou saber mais sobre o GAMA? Entre em contato conosco pelos canais abaixo.",
+        "form-label-nome": "Nome",
+        "form-label-email": "E-mail",
+        "form-label-msg": "Mensagem",
+        "form-btn": "Enviar Mensagem",
+        "form-success": "✓ Mensagem enviada com sucesso! A Diretoria do GAMA responderá em breve.",
+        
+        "footer-text": "Elaboração do site: Guilherme Pinheiro e Daniel Adler © 2026 GAMA – Grupo de Análise Macroeconômica Aplicada",
+        "footer-dept": "Departamento de Economia · PUC-Rio"
+      },
+      en: {
+        "top-dept": "Department of Economics · PUC-Rio",
+        "nav-sub": "Macroeconomics Group · PUC-Rio",
+        "tab-inicio": "Home",
+        "tab-sobre": "About",
+        "tab-cartas": "Letters",
+        "tab-mercados": "Markets",
+        "tab-relatorios": "Reports",
+        "tab-ps": "Admissions",
+        "tab-equipe": "Team",
+        "tab-contato": "Contact",
+        "drawer-pdf": "Download Latest Letter (May 2026)",
+        
+        "hero-eyebrow": "PUC-Rio · Department of Economics",
+        "hero-title": "Applied macroeconomic analysis beyond the classroom.",
+        "hero-desc": "GAMA (Applied Macroeconomic Analysis Group) is the macroeconomics student core at PUC-Rio. We produce monthly letters, analytical reports, and events connecting classroom economic theory with global market dynamics. Built by and for economics students at PUC-Rio.",
+        "hero-btn-cartas": "Economic Letters",
+        "hero-btn-sobre": "About GAMA",
+        
+        "stat-1": "Founded in",
+        "stat-2": "Trainees & active student members",
+        "stat-3": "Training & modeling classes",
+        "stat-4": "Visits to market institutions",
+        
+        "newsletter-title": "Receive Economic Letters in your Inbox",
+        "newsletter-desc": "Subscribe to receive GAMA monthly publications and analytical reports directly in your inbox.",
+        "newsletter-btn": "Subscribe",
+        "newsletter-success": "✓ Email successfully registered! You will receive future editions.",
+        
+        "sobre-eyebrow": "Who we are",
+        "sobre-title": "An analysis and debate-driven core, constantly expanding",
+        "sobre-p1": "We publish our monthly Macroeconomic Letter coordinated by the <strong>Economic Outlook Directorate</strong>. This publication provides in-depth assessments on fiscal and monetary policy, financial markets, external accounts, and relevant macroeconomic trends. Meanwhile, the <strong>Events Directorate</strong> establishes external connections leading to visits, masterclasses, and discussions with major financial institutions and market leaders.",
+        "sobre-p2": "The <strong>People Directorate</strong> is responsible for the student admission process, as well as overseeing the one-semester intensive trainee training program.",
+        "sobre-p3": "Our mission is to foster applied economic reasoning among PUC-Rio economics students, preparing them for careers in academia, the private sector, and public policy. Aligning with the rigorous macroeconomic foundation of our undergraduate curriculum, we engage students in extracurricular activities. Clear responsibility assignment aids in cultivating soft skills in planning, team management, and critical market execution.",
+        
+        "pillar-1-title": "Macroeconomic Analysis",
+        "pillar-1-desc": "Systematic monitoring of the Brazilian and global economies, featuring monthly publications on key indicators and trends.",
+        "pillar-2-title": "Leadership Development",
+        "pillar-2-desc": "Strengthening analytical and communication capabilities, where leadership members head teams that interact on a daily basis.",
+        "pillar-3-title": "Debate & Outreach",
+        "pillar-3-desc": "Organizing conferences and site visits that bridge academic study and contemporary economic debates.",
+        
+        "cartas-eyebrow": "Monthly Publications",
+        "cartas-title": "Economic Letters",
+        "carta-destaque-badge": "Latest Edition",
+        "carta-maio-title": "Economic Letter — May 2026",
+        "carta-abril-title": "Economic Letter — April 2026",
+        "carta-marco-title": "Economic Letter — March 2026",
+        "carta-desc-padrao": "Macroeconomic perspectives on Brazil, US, Europe, and Asia.",
+        "carta-link-text": "Access letter",
+        
+        "mercados-eyebrow": "Economic Outlook Directorate",
+        "mercados-title": "Markets & Indicators Dashboard",
+        "mercados-sub": "Systematic monitoring of currencies, commodities, and curves by the GAMA research team.",
+        "chart-title": "Brent Crude Oil and USD/BRL Exchange Rate",
+        "chart-sub": "Daily Changes (%) in August and early September 2026 | Source: GAMA Outlook Directorate",
+        
+        "asset-USDBRL-label": "USD / BRL",
+        "asset-USDBRL-sub": "Commercial Dollar",
+        "asset-EURBRL-label": "EUR / BRL",
+        "asset-EURBRL-sub": "Commercial Euro",
+        "asset-SELIC-label": "Current Selic Rate",
+        "asset-SELIC-sub": "Last change: Aug 06, 2026",
+        "asset-IPCA-label": "Inflation (IPCA)",
+        "asset-IPCA-sub": "12-month accumulated",
+        "asset-BRENT-label": "Brent Crude Oil",
+        "asset-BRENT-sub": "Barrel (ICE/NYMEX)",
+        "asset-GOLD-label": "Gold (XAU/USD)",
+        "asset-GOLD-sub": "Troy ounce",
+        "asset-SPX-label": "S&P 500 (SPX)",
+        "asset-SPX-sub": "US Index",
+        "asset-IBOV-label": "Ibovespa",
+        "asset-IBOV-sub": "B3 São Paulo",
+        "range-all": "All",
+        "chart-refresh-btn": "Refresh",
+        "chart-refresh-done": "Updated!",
+        "chart-refresh-loading": "Fetching...",
+        "chart-data-note": "Source: Central Bank of Brazil (SGS), AwesomeAPI, and Official Historical Series audited by GAMA Macro.",
+        "chart-last-updated-default": "Continuous automatic update",
+        
+        "relatorios-eyebrow": "Special Publications",
+        "relatorios-title": "Reports",
+        "relatorio-1-title": "Middle East Conflict — Macroeconomic Impacts on the Economy",
+        "relatorio-1-meta": "April 2026 · Analytical Report · GAMA / PUC-Rio · Author: Ananda Botelho",
+        
+        "ps-eyebrow": "Join us",
+        "ps-title": "Selection Process",
+        "ps-p1": "In our selection process, we assess candidate commitment through structured stages. Through a brief presentation video, a written exam, an analytical report submission, and a final group dynamic, we select candidates for our one-semester Trainee Training Course. In this program, trainees acquire core applied macroeconomic notions to later join an operational directorate as active members.",
+        "ps-p2": "<strong>We strongly encourage candidates not admitted in previous editions to apply again, as high demand is often the primary cut-off factor. To ensure close mentorship, cohorts are limited to a maximum of 30 trainees per semester.</strong>",
+        "ps-callout": "Come join one of the fastest-growing academic groups at PUC-Rio.",
+        "ps-btn": "Apply for the Selection Process here",
+        "ps-step-1-title": "Presentation Video",
+        "ps-step-1-desc": "A short video introducing yourself and your motivation for joining GAMA.",
+        "ps-step-2-title": "Multiple Choice Exam",
+        "ps-step-2-desc": "Assessment of analytical reasoning and general economic knowledge.",
+        "ps-step-3-title": "Report Submission",
+        "ps-step-3-desc": "An analytical report demonstrating visual care, economic reasoning, and written communication.",
+        "ps-step-4-title": "Group Dynamic",
+        "ps-step-4-desc": "Final collaborative exercise evaluating teamwork, critical posture, and group commitment.",
+        
+        "equipe-eyebrow": "Management 2026",
+        "equipe-title": "Our Team",
+        "dir-presidencia": "Presidency",
+        "dir-conjuntura": "Economic Outlook Directorate",
+        "dir-pessoas": "People Directorate",
+        "dir-eventos": "Events Directorate",
+        "role-pres": "President",
+        "role-vpres": "Vice-President",
+        "role-dir": "Director",
+        "role-membro": "Member",
+        
+        "contato-eyebrow": "Get in touch",
+        "contato-title": "Contact",
+        "contato-desc": "Interested in partnering, organizing a talk, or learning more about GAMA? Reach out through our official channels below.",
+        "form-label-nome": "Name",
+        "form-label-email": "Email",
+        "form-label-msg": "Message",
+        "form-btn": "Send Message",
+        "form-success": "✓ Message sent successfully! The GAMA Directorate will respond shortly.",
+        
+        "footer-text": "Website development: Guilherme Pinheiro and Daniel Adler © 2026 GAMA – Applied Macroeconomic Analysis Group",
+        "footer-dept": "Department of Economics · PUC-Rio"
+      }
+    };
+
+    let currentLang = 'pt';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+
+      const dict = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerHTML = dict[key];
         }
       });
-    }, { threshold: 0.12 });
+      localStorage.setItem('gama_lang', lang);
 
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+      updateSpecialMarketCardsLang();
 
-    // Mobile menu
-    const hamburger = document.getElementById('hamburger');
-    const navLinks = document.getElementById('navLinks');
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
+      if (typeof renderActiveChart === 'function') {
+        renderActiveChart();
+      }
+    }
 
-    // Close menu on link click
-    navLinks.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => navLinks.classList.remove('open'));
-    });
-
-    // Active nav link on scroll
-    const sections = document.querySelectorAll('section[id]');
-    window.addEventListener('scroll', () => {
-      let current = '';
-      sections.forEach(s => {
-        if (window.scrollY >= s.offsetTop - 120) current = s.id;
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.remove('active');
       });
-      document.querySelectorAll('.nav-links a').forEach(a => {
-        a.classList.remove('active');
-        if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.add('active');
+        }
       });
+      document.querySelectorAll('.drawer-item-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.add('active');
+        }
+      });
+
+      const target = document.getElementById('tab-' + tabId);
+      if (target) {
+        target.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        history.replaceState(null, '', '#' + tabId);
+
+        if (tabId === 'mercados') {
+          setTimeout(renderActiveChart, 100);
+        }
+      }
+    }
+
+    function openDrawer() {
+      document.getElementById('sideDrawer').classList.add('is-open');
+      document.getElementById('drawerOverlay').classList.add('is-open');
+    }
+
+    function closeDrawer() {
+      document.getElementById('sideDrawer').classList.remove('is-open');
+      document.getElementById('drawerOverlay').classList.remove('is-open');
+    }
+
+    function drawerSwitchTab(tabId) {
+      switchTab(tabId);
+      closeDrawer();
+    }
+
+    /* [INATIVO: Função Inscrição Newsletter]
+function handleNewsletterSubmit(e, source) {
+      e.preventDefault();
+      const input = document.getElementById('newsletter-email-' + source);
+      const msgBox = document.getElementById('newsletter-msg-' + source);
+      const email = input.value.trim();
+
+      if (!email) return;
+
+      
+      let subs = JSON.parse(localStorage.getItem('gama_newsletter') || '[]');
+      if (!subs.includes(email)) subs.push(email);
+      localStorage.setItem('gama_newsletter', JSON.stringify(subs));
+
+      const dict = translations[currentLang];
+      msgBox.innerHTML = dict['newsletter-success'] || "✓ E-mail cadastrado com sucesso!";
+      msgBox.style.display = 'block';
+      input.value = '';
+
+      setTimeout(() => {
+        msgBox.style.display = 'none';
+      }, 5000);
+    }
+    */
+
+    /* [INATIVO: Função Formulário de Contato Web3Forms]
+async function handleDirectFormSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('form-submit-btn');
+      const statusMsg = document.getElementById('formStatusMsg');
+      const nome = document.getElementById('form-nome').value;
+      const email = document.getElementById('form-email').value;
+      const msg = document.getElementById('form-mensagem').value;
+
+      btn.disabled = true;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = currentLang === 'pt' ? 'Enviando...' : 'Sending...';
+
+      try {
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            access_key: 'b9b4a1eb-e9e9-4e76-a4c3-63162cf5efda', 
+            name: nome,
+            email: email,
+            message: msg,
+            subject: `Contato via Site GAMA - ${nome}`
+          })
+        });
+
+        const dict = translations[currentLang];
+        statusMsg.className = 'form-status-msg success';
+        statusMsg.innerHTML = dict['form-success'];
+        statusMsg.style.display = 'block';
+
+        document.getElementById('contactForm').reset();
+      } catch (err) {
+        
+        const subject = encodeURIComponent("Contato via Site GAMA - " + nome);
+        const body = encodeURIComponent("Nome: " + nome + "\nE-mail: " + email + "\n\nMensagem:\n" + msg);
+        window.location.href = `mailto:gama.diretoriadepessoas@gmail.com?subject=${subject}&body=${body}`;
+        
+        statusMsg.className = 'form-status-msg success';
+        statusMsg.innerHTML = translations[currentLang]['form-success'];
+        statusMsg.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+    */
+
+    const MARKET_ASSETS = {
+      'USDBRL': {
+        name: { pt: 'USD / BRL', en: 'USD / BRL' },
+        title: { pt: 'USD / BRL — Dólar Comercial Americano', en: 'USD / BRL — US Commercial Dollar' },
+        unit: 'R$',
+        source: { pt: 'AwesomeAPI / BCB PTAX', en: 'AwesomeAPI / Central Bank of Brazil PTAX' },
+        isPct: false,
+        decimals: 4
+      },
+      'EURBRL': {
+        name: { pt: 'EUR / BRL', en: 'EUR / BRL' },
+        title: { pt: 'EUR / BRL — Euro Comercial', en: 'EUR / BRL — Commercial Euro' },
+        unit: 'R$',
+        source: { pt: 'AwesomeAPI / BCB PTAX', en: 'AwesomeAPI / Central Bank of Brazil PTAX' },
+        isPct: false,
+        decimals: 4
+      },
+      'SELIC': {
+        name: { pt: 'Meta Selic', en: 'Selic Target Rate' },
+        title: { pt: 'Taxa Selic Meta — Banco Central do Brasil (Copom)', en: 'Selic Target Rate — Central Bank of Brazil (Copom)' },
+        unit: '% a.a.',
+        source: { pt: 'API BCB SGS (Série 432)', en: 'Central Bank of Brazil API (SGS 432)' },
+        isPct: true,
+        decimals: 2
+      },
+      'IPCA': {
+        name: { pt: 'Inflação (IPCA)', en: 'Inflation (IPCA)' },
+        title: { pt: 'IPCA — Acumulado em 12 meses (IBGE / BCB)', en: 'IPCA Inflation — 12-Month Accumulated (IBGE / BCB)' },
+        unit: '%',
+        source: { pt: 'API BCB SGS (Série 13522)', en: 'Central Bank of Brazil API (SGS 13522)' },
+        isPct: true,
+        decimals: 2
+      },
+      'BRENT': {
+        name: { pt: 'Petróleo Brent', en: 'Brent Crude Oil' },
+        title: { pt: 'Petróleo Brent — Contratos Futuros ICE (Barril)', en: 'Brent Crude Oil — ICE Futures (Barrel)' },
+        unit: 'US$',
+        source: { pt: 'Mercado de Commodities Global / ICE', en: 'Global Commodities Market / ICE' },
+        isPct: false,
+        decimals: 2
+      },
+      'GOLD': {
+        name: { pt: 'Ouro (Gold)', en: 'Gold (XAU/USD)' },
+        title: { pt: 'Ouro Spot — XAU/USD (Onça-troy)', en: 'Spot Gold — XAU/USD (Troy Ounce)' },
+        unit: 'US$',
+        source: { pt: 'Mercado de Metais Preciosos / LBMA', en: 'Precious Metals Market / LBMA' },
+        isPct: false,
+        decimals: 2
+      },
+      'SPX': {
+        name: { pt: 'S&P 500 (SPX)', en: 'S&P 500 (SPX)' },
+        title: { pt: 'S&P 500 — Standard & Poor\'s 500 Index (Nova York)', en: 'S&P 500 — Standard & Poor\'s 500 Index (New York)' },
+        unit: 'pts',
+        source: { pt: 'Bolsa de Nova York (NYSE/Nasdaq)', en: 'New York Stock Exchange (NYSE/Nasdaq)' },
+        isPct: false,
+        decimals: 2
+      },
+      'IBOV': {
+        name: { pt: 'Ibovespa', en: 'Ibovespa Index' },
+        title: { pt: 'Índice Bovespa — B3 Brasil Bolsa Balcão (São Paulo)', en: 'Bovespa Index — B3 Brazil Stock Exchange (São Paulo)' },
+        unit: 'pts',
+        source: { pt: 'B3 — Brasil, Bolsa, Balcão', en: 'B3 — Brazil Stock Exchange' },
+        isPct: false,
+        decimals: 0
+      }
+    };
+
+    let activeMarketAsset = 'USDBRL';
+    let activeRange = '1A';
+    let marketDataCache = {};
+    let globalMarketCache = null;
+
+    function formatMarketVal(val, assetKey) {
+      if (val === null || val === undefined || isNaN(val)) return '—';
+      const meta = MARKET_ASSETS[assetKey];
+      if (!meta) return val.toString();
+
+      if (assetKey === 'SELIC') return Number(val).toFixed(2).replace('.', ',') + '%';
+      if (assetKey === 'IPCA') return Number(val).toFixed(2).replace('.', ',') + '% a.a.';
+      if (assetKey === 'USDBRL' || assetKey === 'EURBRL') {
+        return 'R$ ' + Number(val).toFixed(meta.decimals).replace('.', ',');
+      }
+      if (assetKey === 'BRENT' || assetKey === 'GOLD') {
+        return 'US$ ' + Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      if (assetKey === 'IBOV') {
+        return Number(val).toLocaleString('pt-BR', { maximumFractionDigits: 0 });
+      }
+      if (assetKey === 'SPX') {
+        return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    async function loadMarketData() {
+      try {
+        const resp = await fetch('market_cache.json');
+        if (resp.ok) {
+          globalMarketCache = await resp.json();
+          ['IBOV', 'SPX', 'BRENT', 'GOLD'].forEach(k => {
+            if (globalMarketCache[k]) {
+              const item = globalMarketCache[k];
+              const pts = item.points || [];
+              marketDataCache[k] = {
+                currentPrice: item.price,
+                pctChange: item.pctChange || 0,
+                series: pts.map(p => ({
+                  date: new Date(p.t * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+                  rawDate: new Date(p.t * 1000),
+                  value: p.c
+                }))
+              };
+              updateMetricCardUI(k, item.price, item.pctChange);
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar market_cache.json:', err);
+      }
+
+      try {
+        const [usdDailyResp, eurDailyResp, liveResp] = await Promise.all([
+          fetch('https://economia.awesomeapi.com.br/json/daily/USD-BRL/365'),
+          fetch('https://economia.awesomeapi.com.br/json/daily/EUR-BRL/365'),
+          fetch('https://economia.awesomeapi.com.br/last/USD-BRL,EUR-BRL')
+        ]);
+
+        if (liveResp.ok) {
+          const live = await liveResp.json();
+          if (live.USDBRL) {
+            const p = parseFloat(live.USDBRL.bid);
+            const chg = parseFloat(live.USDBRL.pctChange);
+            updateMetricCardUI('USDBRL', p, chg);
+          }
+          if (live.EURBRL) {
+            const p = parseFloat(live.EURBRL.bid);
+            const chg = parseFloat(live.EURBRL.pctChange);
+            updateMetricCardUI('EURBRL', p, chg);
+          }
+        }
+
+        if (usdDailyResp.ok) {
+          const usdData = await usdDailyResp.json();
+          const series = usdData.slice().reverse().map(d => ({
+            date: new Date(parseInt(d.timestamp) * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+            rawDate: new Date(parseInt(d.timestamp) * 1000),
+            value: parseFloat(d.bid)
+          }));
+          const curr = parseFloat(usdData[0].bid);
+          const chg = parseFloat(usdData[0].pctChange || 0);
+          marketDataCache['USDBRL'] = { currentPrice: curr, pctChange: chg, series };
+        }
+
+        if (eurDailyResp.ok) {
+          const eurData = await eurDailyResp.json();
+          const series = eurData.slice().reverse().map(d => ({
+            date: new Date(parseInt(d.timestamp) * 1000).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }),
+            rawDate: new Date(parseInt(d.timestamp) * 1000),
+            value: parseFloat(d.bid)
+          }));
+          const curr = parseFloat(eurData[0].bid);
+          const chg = parseFloat(eurData[0].pctChange || 0);
+          marketDataCache['EURBRL'] = { currentPrice: curr, pctChange: chg, series };
+        }
+      } catch (err) {
+        console.warn('Erro ao conectar AwesomeAPI:', err);
+      }
+
+      try {
+        const [selicResp, ipcaResp, ipcaMensalResp] = await Promise.all([
+          fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados?formato=json&dataInicial=01/01/2023&dataFinal=31/12/2026'),
+          fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.13522/dados?formato=json&dataInicial=01/01/2023&dataFinal=31/12/2026'),
+          fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json&dataInicial=01/01/2026&dataFinal=31/12/2026')
+        ]);
+
+        if (selicResp.ok) {
+          const sData = await selicResp.json();
+          if (sData.length > 0) {
+            const curr = parseFloat(sData[sData.length - 1].valor);
+            let lastChangeDate = sData[0].data;
+            let prevVal = curr;
+            for (let i = sData.length - 1; i >= 1; i--) {
+              if (sData[i].valor !== sData[i - 1].valor) {
+                lastChangeDate = sData[i].data;
+                prevVal = parseFloat(sData[i - 1].valor);
+                break;
+              }
+            }
+            const diff = curr - prevVal;
+            const chgStr = diff === 0 ? 'Sem alteração recente' : (diff > 0 ? `▲ +${diff.toFixed(2)} p.p.` : `▼ ${diff.toFixed(2)} p.p.`) + ' (Copom)';
+            
+            const selicSeries = sData.map(d => {
+              const [dia, mes, ano] = d.data.split('/');
+              const dateObj = new Date(`${ano}-${mes}-${dia}`);
+              return {
+                date: `${dia}/${mes}/${ano.slice(-2)}`,
+                rawDate: dateObj,
+                value: parseFloat(d.valor)
+              };
+            });
+
+            marketDataCache['SELIC'] = {
+              currentPrice: curr,
+              pctChange: diff,
+              series: selicSeries,
+              lastChange: lastChangeDate
+            };
+
+            const selicValEl = document.getElementById('val-SELIC');
+            if (selicValEl) selicValEl.innerText = curr.toFixed(2).replace('.', ',') + '%';
+            updateSpecialMarketCardsLang();
+          }
+        }
+
+        if (ipcaResp.ok) {
+          const ipca12m = await ipcaResp.json();
+          let mensalStr = '+0,07%';
+          if (ipcaMensalResp.ok) {
+            const ipcaM = await ipcaMensalResp.json();
+            if (ipcaM.length > 0) {
+              const lastM = parseFloat(ipcaM[ipcaM.length - 1].valor);
+              mensalStr = (lastM >= 0 ? '+' : '') + lastM.toFixed(2).replace('.', ',') + '%';
+            }
+          }
+
+          if (ipca12m.length > 0) {
+            const curr12 = parseFloat(ipca12m[ipca12m.length - 1].valor);
+            const prev12 = parseFloat(ipca12m[ipca12m.length - 2]?.valor || curr12);
+            const diff12 = curr12 - prev12;
+
+            const ipcaSeries = ipca12m.map(d => {
+              const [dia, mes, ano] = d.data.split('/');
+              const dateObj = new Date(`${ano}-${mes}-${dia}`);
+              return {
+                date: `${mes}/${ano.slice(-2)}`,
+                rawDate: dateObj,
+                value: parseFloat(d.valor)
+              };
+            });
+
+            marketDataCache['IPCA'] = {
+              currentPrice: curr12,
+              pctChange: diff12,
+              series: ipcaSeries,
+              mensal: mensalStr
+            };
+
+            const ipcaValEl = document.getElementById('val-IPCA');
+            if (ipcaValEl) ipcaValEl.innerText = curr12.toFixed(2).replace('.', ',') + '% a.a.';
+            updateSpecialMarketCardsLang();
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao conectar BCB SGS:', err);
+      }
+
+      renderActiveChart();
+
+      const lastUpEl = document.getElementById('chartLastUpdated');
+      if (lastUpEl) {
+        const timeNow = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        lastUpEl.innerText = currentLang === 'en' 
+          ? `Last query: ${timeNow} (auto-refresh every 60s)` 
+          : `Última consulta: ${timeNow} (auto-refresh a cada 60s)`;
+      }
+    }
+
+    async function refreshMarketDataManual() {
+      const icon = document.getElementById('refreshIcon');
+      const label = document.getElementById('refreshLabel');
+      if (icon) icon.style.animation = 'spin 0.8s linear infinite';
+      if (label) label.innerText = currentLang === 'pt' ? 'Buscando...' : 'Fetching...';
+
+      try {
+        await loadMarketData();
+      } finally {
+        setTimeout(() => {
+          if (icon) icon.style.animation = 'none';
+          if (label) label.innerText = currentLang === 'pt' ? 'Atualizado!' : 'Updated!';
+          setTimeout(() => {
+            if (label) label.innerText = currentLang === 'pt' ? 'Atualizar' : 'Refresh';
+          }, 2000);
+        }, 600);
+      }
+    }
+
+    function updateMetricCardUI(assetKey, price, pctChange) {
+      const valEl = document.getElementById('val-' + assetKey);
+      const chgEl = document.getElementById('chg-' + assetKey);
+      if (valEl) valEl.innerText = formatMarketVal(price, assetKey);
+      if (chgEl) {
+        const isPos = pctChange >= 0;
+        const sign = isPos ? '+' : '';
+        chgEl.innerText = `${isPos ? '▲' : '▼'} ${sign}${pctChange.toFixed(2).replace('.', ',')}%`;
+        chgEl.className = 'metric-change ' + (isPos ? 'positive' : 'negative');
+      }
+    }
+
+    function selectMarketAsset(assetKey) {
+      activeMarketAsset = assetKey;
+      document.querySelectorAll('.metric-card').forEach(c => c.classList.remove('active'));
+      const card = document.getElementById('card-' + assetKey);
+      if (card) card.classList.add('active');
+
+      renderActiveChart();
+    }
+
+    function setChartRange(range) {
+      activeRange = range;
+      document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
+      const btn = document.getElementById('range-' + range);
+      if (btn) btn.classList.add('active');
+
+      renderActiveChart();
+    }
+
+    function updateSpecialMarketCardsLang() {
+      const isEn = currentLang === 'en';
+      const selicData = marketDataCache['SELIC'];
+      const subSelicEl = document.getElementById('sub-SELIC');
+      const chgSelicEl = document.getElementById('chg-SELIC');
+
+      const lastDate = selicData ? selicData.lastChange : '06/08/2026';
+      if (subSelicEl) {
+        subSelicEl.innerText = isEn ? `Last change: ${lastDate}` : `Última mudança: ${lastDate}`;
+      }
+      if (chgSelicEl) {
+        const diff = selicData ? selicData.pctChange : -0.25;
+        if (diff === 0) {
+          chgSelicEl.innerText = isEn ? 'No recent change' : 'Sem alteração recente';
+        } else {
+          const arrow = diff > 0 ? '▲' : '▼';
+          const sign = diff > 0 ? '+' : '';
+          chgSelicEl.innerText = `${arrow} ${sign}${diff.toFixed(2).replace('.', ',')} p.p. (Copom)`;
+        }
+      }
+
+      const ipcaData = marketDataCache['IPCA'];
+      const subIpcaEl = document.getElementById('sub-IPCA');
+      const chgIpcaEl = document.getElementById('chg-IPCA');
+      if (subIpcaEl) {
+        subIpcaEl.innerText = isEn ? '12-month accumulated' : 'Acumulado 12 meses';
+      }
+      if (chgIpcaEl) {
+        const mStr = (ipcaData && ipcaData.mensal) ? ipcaData.mensal : '+0,07%';
+        chgIpcaEl.innerText = isEn ? `${mStr} this month` : `${mStr} no mês`;
+      }
+    }
+
+    function renderActiveChart() {
+      const meta = MARKET_ASSETS[activeMarketAsset];
+      const dataObj = marketDataCache[activeMarketAsset];
+      if (!meta || !dataObj || !dataObj.series) return;
+
+      const rawSeries = dataObj.series;
+      if (rawSeries.length === 0) return;
+
+      const now = new Date();
+      let days = 365;
+      if (activeRange === '1M') days = 30;
+      else if (activeRange === '6M') days = 180;
+      else if (activeRange === '1A') days = 365;
+      else if (activeRange === 'MAX') days = 365 * 5;
+
+      const cutoff = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
+      let filtered = rawSeries.filter(p => p.rawDate >= cutoff);
+      if (filtered.length < 5) filtered = rawSeries.slice(-Math.min(rawSeries.length, 30));
+
+      const labels = filtered.map(p => p.date);
+      const values = filtered.map(p => p.value);
+
+      const firstVal = values[0];
+      const lastVal = values[values.length - 1];
+      const periodDiff = lastVal - firstVal;
+      const periodPct = firstVal !== 0 ? (periodDiff / firstVal) * 100 : 0;
+      const isPositive = periodDiff >= 0;
+
+      const titleEl = document.getElementById('chartActiveTitle');
+      const bigPriceEl = document.getElementById('chartBigPrice');
+      const bigChgEl = document.getElementById('chartBigChange');
+      const timeScopeEl = document.getElementById('chartTimeScope');
+      const badgeEl = document.getElementById('chartSourceBadge');
+
+      const isEn = currentLang === 'en';
+      if (titleEl) titleEl.innerText = typeof meta.title === 'object' ? (meta.title[currentLang] || meta.title.pt) : meta.title;
+      if (bigPriceEl) bigPriceEl.innerText = formatMarketVal(lastVal, activeMarketAsset);
+      if (bigChgEl) {
+        const sign = isPositive ? '+' : '';
+        bigChgEl.innerText = `${isPositive ? '▲' : '▼'} ${sign}${periodPct.toFixed(2).replace('.', ',')}% (${sign}${periodDiff.toFixed(2).replace('.', ',')})`;
+        bigChgEl.className = 'metric-change ' + (isPositive ? 'positive' : 'negative');
+      }
+      if (timeScopeEl) {
+        const rangeLabelsPt = { '1M': 'Último mês', '6M': 'Últimos 6 meses', '1A': 'Último ano', 'MAX': 'Série completa' };
+        const rangeLabelsEn = { '1M': 'Past month', '6M': 'Past 6 months', '1A': 'Past year', 'MAX': 'Full series' };
+        const map = isEn ? rangeLabelsEn : rangeLabelsPt;
+        timeScopeEl.innerText = `(${map[activeRange] || activeRange})`;
+      }
+      if (badgeEl) badgeEl.innerText = typeof meta.source === 'object' ? (meta.source[currentLang] || meta.source.pt) : meta.source;
+
+      const assetDisplayName = typeof meta.name === 'object' ? (meta.name[currentLang] || meta.name.pt) : meta.name;
+
+      const lineColor = isPositive ? '#0006e0' : '#001b58';
+      const bgGradientColor = isPositive ? 'rgba(0, 6, 224, 0.08)' : 'rgba(0, 27, 88, 0.08)';
+
+      const ctx = document.getElementById('macroChart');
+      if (!ctx) return;
+
+      if (window.macroChartInstance) {
+        window.macroChartInstance.destroy();
+      }
+
+      window.macroChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: assetDisplayName,
+            data: values,
+            borderColor: lineColor,
+            backgroundColor: bgGradientColor,
+            borderWidth: 2.25,
+            fill: true,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: lineColor,
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 2,
+            tension: 0.15
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#001b58',
+              titleFont: { family: 'DM Sans', size: 12, weight: 'bold' },
+              bodyFont: { family: 'DM Sans', size: 13 },
+              padding: 10,
+              displayColors: false,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  return assetDisplayName + ': ' + formatMarketVal(val, activeMarketAsset);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                maxTicksLimit: 8,
+                font: { family: 'DM Sans', size: 11 },
+                color: '#5e6b78'
+              }
+            },
+            y: {
+              grid: { color: 'rgba(0, 27, 88, 0.06)' },
+              ticks: {
+                font: { family: 'DM Sans', size: 11 },
+                color: '#5e6b78',
+                callback: function(val) {
+                  if (activeMarketAsset === 'SELIC' || activeMarketAsset === 'IPCA') return val.toFixed(1) + '%';
+                  if (activeMarketAsset === 'USDBRL' || activeMarketAsset === 'EURBRL') return 'R$ ' + val.toFixed(2);
+                  if (activeMarketAsset === 'IBOV' || activeMarketAsset === 'SPX') return val.toLocaleString('pt-BR');
+                  return val;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('gama_lang') || 'pt';
+      if (savedLang !== 'pt') setLanguage(savedLang);
+
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById('tab-' + hash)) {
+        switchTab(hash);
+      }
+
+      loadMarketData();
+
+      setInterval(loadMarketData, 60000);
+
+      const drawerBtn = document.getElementById('drawerToggleBtn');
+      if (drawerBtn) {
+        drawerBtn.addEventListener('click', openDrawer);
+      }
     });
   </script>
 </body>
